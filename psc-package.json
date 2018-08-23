@@ -1,6 +1,6 @@
 {
   "name": "rally-qr-code-list",
-  "set": "bouzuya-20180814",
+  "set": "bouzuya-20180823",
   "source": "https://github.com/bouzuya/package-sets.git",
   "depends": [
     "prelude",
