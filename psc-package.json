@@ -1,8 +1,10 @@
 {
   "name": "rally-qr-code-list",
-  "set": "bouzuya-20180823",
+  "set": "bouzuya-20180824",
   "source": "https://github.com/bouzuya/package-sets.git",
   "depends": [
+    "arraybuffer",
+    "bouzuya-http-server",
     "prelude",
     "psci-support"
   ]

@@ -12,7 +12,8 @@
   },
   "devDependencies": {
     "psc-package-bin-simple": "^1.0.1",
-    "purescript": "^0.12.0"
+    "purescript": "^0.12.0",
+    "text-encoding": "^0.6.4"
   },
   "homepage": "https://github.com/bouzuya/rally-qr-code-list#readme",
   "keywords": [],
@@ -27,7 +28,8 @@
     "postinstall": "psc-package install",
     "psc-package": "psc-package",
     "purs": "purs",
-    "start": "node -e \"require('./output/Main').main();\"",
+    "repl": "psc-package repl",
+    "start": "node -e \"require('./output/Server.Main').main();\"",
     "test": "node -e \"require('./output/Test.Main').main();\""
   }
 }
