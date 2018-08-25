@@ -17,8 +17,7 @@ import Effect.Class.Console (log)
 import Prelude (Unit, bind, discard, pure, show, (<<<), (<>))
 import Pux as Pux
 import Pux.Renderer.React (renderToStaticMarkup)
-import Text.Smolder.HTML as H
-import Text.Smolder.Markup as M
+import Share.View.Home (view)
 
 -- TODO: move to Bouzuya.HTTP.Server
 type ServerOptions =
@@ -39,10 +38,7 @@ handleRequest _ = do
   let
     puxConfig =
       { initialState: {}
-      , view: \_ -> do
-          H.html do
-            H.body do
-              H.h1 (M.text "Hello!!")
+      , view
       , foldp: \event -> \state -> { state, effects: [] }
       , inputs: []
       }
