@@ -9,11 +9,13 @@ import Data.ArrayBuffer.ArrayBuffer as ArrayBuffer
 import Data.ArrayBuffer.DataView as DataView
 import Data.ArrayBuffer.Typed as TypedArray
 import Data.ArrayBuffer.Types (Uint8Array)
+import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Class.Console (log)
 import Prelude (Unit, discard, pure, show, (<<<), (<>))
 
+-- TODO: move to Bouzuya.HTTP.Server
 type ServerOptions =
   { hostname :: String
   , port :: Int
@@ -29,9 +31,21 @@ handleListen options =
 
 handleRequest :: Request -> Aff Response
 handleRequest _ =
+  let
+    htmlAsString
+      = "<!DOCTYPE html>"
+      <> "<html>"
+      <> "<body>"
+      <> "<h1>Hello</h1>"
+      <> "</body>"
+      <> "</html>"
+    body = stringToUint8Array htmlAsString
+  in
   pure
-    { body: stringToUint8Array "Hello"
-    , headers: []
+    { body: body
+    , headers:
+      [ Tuple "Content-Type" "text/html"
+      ]
     , status: status200
     }
 
