@@ -12,8 +12,13 @@ import Data.ArrayBuffer.Types (Uint8Array)
 import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Aff (Aff)
+import Effect.Class (liftEffect)
 import Effect.Class.Console (log)
-import Prelude (Unit, discard, pure, show, (<<<), (<>))
+import Prelude (Unit, bind, discard, pure, show, (<<<), (<>))
+import Pux as Pux
+import Pux.Renderer.React (renderToStaticMarkup)
+import Text.Smolder.HTML as H
+import Text.Smolder.Markup as M
 
 -- TODO: move to Bouzuya.HTTP.Server
 type ServerOptions =
@@ -30,17 +35,21 @@ handleListen options =
   log ("listen http://" <> options.hostname <> ":" <> show options.port)
 
 handleRequest :: Request -> Aff Response
-handleRequest _ =
+handleRequest _ = do
   let
-    htmlAsString
-      = "<!DOCTYPE html>"
-      <> "<html>"
-      <> "<body>"
-      <> "<h1>Hello</h1>"
-      <> "</body>"
-      <> "</html>"
+    puxConfig =
+      { initialState: {}
+      , view: \_ -> do
+          H.html do
+            H.body do
+              H.h1 (M.text "Hello!!")
+      , foldp: \event -> \state -> { state, effects: [] }
+      , inputs: []
+      }
+  app <- liftEffect (Pux.start puxConfig)
+  htmlAsString <- liftEffect (renderToStaticMarkup app.markup)
+  let
     body = stringToUint8Array htmlAsString
-  in
   pure
     { body: body
     , headers:

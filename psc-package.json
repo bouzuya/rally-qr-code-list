@@ -6,6 +6,7 @@
     "arraybuffer",
     "bouzuya-http-server",
     "prelude",
-    "psci-support"
+    "psci-support",
+    "pux"
   ]
 }
