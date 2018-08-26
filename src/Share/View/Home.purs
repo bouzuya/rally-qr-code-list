@@ -32,3 +32,5 @@ view state = do
         H.address $ do
           H.a M.! HA.href "https://bouzuya.net" $ do
             M.text "bouzuya"
+      H.script M.! HA.src "http://localhost:8081/script/index.js" $ do -- TODO
+        M.text ""
