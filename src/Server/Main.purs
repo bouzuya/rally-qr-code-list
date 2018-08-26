@@ -17,6 +17,7 @@ import Effect.Class.Console (log)
 import Prelude (Unit, bind, discard, pure, show, (<<<), (<>))
 import Pux as Pux
 import Pux.Renderer.React (renderToStaticMarkup)
+import Share.Event (foldp)
 import Share.View.Home (view)
 
 -- TODO: move to Bouzuya.HTTP.Server
@@ -39,7 +40,7 @@ handleRequest _ = do
     puxConfig =
       { initialState: {}
       , view
-      , foldp: \event -> \state -> { state, effects: [] }
+      , foldp
       , inputs: []
       }
   app <- liftEffect (Pux.start puxConfig)

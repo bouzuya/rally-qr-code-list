@@ -1,15 +1,16 @@
 module Share.View.Home
   (view) where
 
-import Prelude (Unit, discard, ($))
+import Prelude (discard, ($))
 import Pux.DOM.HTML as P
+import Share.Event (Event)
 import Share.State (State)
 import Share.View.SignInForm as SignInForm
 import Text.Smolder.HTML as H
 import Text.Smolder.HTML.Attributes as HA
 import Text.Smolder.Markup as M
 
-view :: State -> P.HTML Unit
+view :: State -> P.HTML Event
 view state = do
   H.html $ do
     H.head $ do
