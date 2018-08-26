@@ -5,10 +5,26 @@ import Prelude (Unit)
 import Pux.DOM.HTML as P
 import Share.State (State)
 import Text.Smolder.HTML as H
+import Text.Smolder.HTML.Attributes as HA
 import Text.Smolder.Markup as M
 
 view :: State -> P.HTML Unit
 view state = do
   H.html do
+    H.head do
+      H.meta M.! HA.charset "UTF-8"
+      H.title "RALLY QR code list"
     H.body do
-      H.h1 (M.text "Hello!!")
+      H.header do
+        H.h1 do
+          M.text "RALLY QR code list"
+      H.div M.! HA.className "body" do
+        H.p do
+          M.text "Hello!"
+      H.footer do
+        H.div M.! HA.className "source-code" do
+          H.a M.! HA.href "https://github.com/bouzuya/rally-qr-code-list" do
+            M.text "Source Code"
+        H.address do
+          H.a M.! HA.href "https://bouzuya.net" do
+            M.text "bouzuya"
