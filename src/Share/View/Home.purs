@@ -5,7 +5,7 @@ import Prelude (discard, ($))
 import Pux.DOM.HTML as P
 import Share.Event (Event)
 import Share.State (State)
-import Share.View.SignInForm as SignInForm
+import Share.View.ClientRoot as ClientRoot
 import Text.Smolder.HTML as H
 import Text.Smolder.HTML.Attributes as HA
 import Text.Smolder.Markup as M
@@ -18,19 +18,6 @@ view state = do
       H.title $ do
         M.text "RALLY QR code list"
     H.body $ do
-      H.header $ do
-        H.h1 $ do
-          M.text "RALLY QR code list"
-      H.div M.! HA.className "body" $ do
-        H.p $ do
-          M.text "Hello!"
-        SignInForm.view state
-      H.footer $ do
-        H.div M.! HA.className "source-code" $ do
-          H.a M.! HA.href "https://github.com/bouzuya/rally-qr-code-list" $ do
-            M.text "Source Code"
-        H.address $ do
-          H.a M.! HA.href "https://bouzuya.net" $ do
-            M.text "bouzuya"
+      ClientRoot.view state
       H.script M.! HA.src "http://localhost:8081/script/index.js" $ do -- TODO
         M.text ""
