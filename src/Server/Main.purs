@@ -38,7 +38,10 @@ handleRequest :: Request -> Aff Response
 handleRequest _ = do
   let
     puxConfig =
-      { initialState: {}
+      { initialState:
+        { email: "email@example.com"
+        , password: "pass1"
+        }
       , view
       , foldp
       , inputs: []

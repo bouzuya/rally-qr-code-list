@@ -3,4 +3,6 @@ module Share.State
   ) where
 
 type State =
-  {}
+  { email :: String
+  , password :: String
+  }
