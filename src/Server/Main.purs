@@ -18,7 +18,7 @@ import Prelude (Unit, bind, discard, pure, show, (<<<), (<>))
 import Pux as Pux
 import Pux.Renderer.React (renderToStaticMarkup)
 import Share.Event (foldp)
-import Share.View.Home (view)
+import Share.View.ServerRoot as ServerRoot
 
 -- TODO: move to Bouzuya.HTTP.Server
 type ServerOptions =
@@ -42,7 +42,7 @@ handleRequest _ = do
         { email: "email@example.com"
         , password: "pass1"
         }
-      , view
+      , view: ServerRoot.view
       , foldp
       , inputs: []
       }

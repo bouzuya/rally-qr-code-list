@@ -1,4 +1,4 @@
-module Share.View.Home
+module Share.View.ServerRoot
   (view) where
 
 import Prelude (discard, ($))
