@@ -26,6 +26,6 @@ view state = do
         H.span M.! HA.className "value" $ do
           H.input M.! HA.type' "password" M.! HA.value state.password  M.#! PE.onChange PasswordChange
     H.div $ do
-      H.button M.! HA.className "sign-in" M.#! PE.onClick (const SignIn) $ do
+      H.button M.! HA.className "sign-in" M.#! PE.onClick SignIn $ do
         H.span M.! HA.className "label" $ do
           M.text "Sign In"

@@ -10,19 +10,21 @@ import Prelude (discard, pure, ($))
 import Pux (EffModel, noEffects)
 import Pux.DOM.Events (DOMEvent, targetValue)
 import Share.State (State)
+import Web.Event.Event (preventDefault)
 
 data Event
   = EmailChange DOMEvent
   | PasswordChange DOMEvent
-  | SignIn
+  | SignIn DOMEvent
 
 foldp :: Event -> State -> EffModel State Event
 foldp (EmailChange event) state = noEffects $ state { email = targetValue event }
 foldp (PasswordChange event) state = noEffects $ state { password = targetValue event }
-foldp SignIn state =
+foldp (SignIn event) state =
   { state
   , effects:
     [ do
+        liftEffect (preventDefault event)
         liftEffect (log "SignIn")
         pure Nothing
     ]
