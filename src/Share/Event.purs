@@ -6,7 +6,7 @@ module Share.Event
 import Data.Maybe (Maybe(..))
 import Effect.Class (liftEffect)
 import Effect.Console (log)
-import Prelude (discard, pure, ($))
+import Prelude (discard, pure, ($), (<>))
 import Pux (EffModel, noEffects)
 import Pux.DOM.Events (DOMEvent, targetValue)
 import Share.State (State)
@@ -24,8 +24,8 @@ foldp (SignIn event) state =
   { state
   , effects:
     [ do
-        liftEffect (preventDefault event)
-        liftEffect (log "SignIn")
+        liftEffect $ preventDefault event
+        liftEffect $ log $ "SignIn: " <> state.email <> ":" <> state.password
         pure Nothing
     ]
   }
