@@ -4,7 +4,7 @@ module Share.View.SignInForm
 import Prelude (const, discard, ($))
 import Pux.DOM.Events as PE
 import Pux.DOM.HTML as P
-import Share.Event (Event(SignIn))
+import Share.Event (Event(..))
 import Share.State (State)
 import Text.Smolder.HTML as H
 import Text.Smolder.HTML.Attributes as HA
@@ -18,13 +18,13 @@ view state = do
         H.span M.! HA.className "label" $ do
           M.text "E-Mail"
         H.span M.! HA.className "value" $ do
-          H.input M.! HA.value state.email -- TODO: event
+          H.input M.! HA.value state.email M.#! PE.onChange EmailChange
     H.div $ do
       H.label M.! HA.className "password" $ do
         H.span M.! HA.className "label" $ do
           M.text "Password"
         H.span M.! HA.className "value" $ do
-          H.input M.! HA.type' "password" M.! HA.value state.password -- TODo: event
+          H.input M.! HA.type' "password" M.! HA.value state.password  M.#! PE.onChange PasswordChange
     H.div $ do
       H.button M.! HA.className "sign-in" M.#! PE.onClick (const SignIn) $ do
         H.span M.! HA.className "label" $ do
