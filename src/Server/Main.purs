@@ -18,6 +18,7 @@ import Prelude (Unit, bind, discard, pure, show, (<<<), (<>))
 import Pux as Pux
 import Pux.Renderer.React (renderToStaticMarkup)
 import Share.Event (foldp)
+import Share.State as State
 import Share.View.ServerRoot as ServerRoot
 
 -- TODO: move to Bouzuya.HTTP.Server
@@ -38,10 +39,7 @@ handleRequest :: Request -> Aff Response
 handleRequest _ = do
   let
     puxConfig =
-      { initialState:
-        { email: "email@example.com"
-        , password: "pass1"
-        }
+      { initialState: State.init
       , view: ServerRoot.view
       , foldp
       , inputs: []

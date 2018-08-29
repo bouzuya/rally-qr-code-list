@@ -7,6 +7,7 @@ import Prelude (Unit, bind, discard)
 import Pux as Pux
 import Pux.Renderer.React as PR
 import Share.Event (foldp)
+import Share.State as State
 import Share.View.ClientRoot as ClientRoot
 
 main :: Effect Unit
@@ -14,10 +15,7 @@ main = do
   log "client"
   let
     puxConfig =
-      { initialState:
-        { email: "email@example.com"
-        , password: "pass1"
-        }
+      { initialState: State.init
       , view: ClientRoot.view
       , foldp
       , inputs: []
