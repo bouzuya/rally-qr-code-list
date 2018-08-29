@@ -18,6 +18,7 @@ view state = do
       H.title $ do
         M.text "RALLY QR code list"
     H.body $ do
-      ClientRoot.view state
+      H.div M.! HA.className "root" $ do
+        ClientRoot.view state
       H.script M.! HA.src "http://localhost:8081/script/index.js" $ do -- TODO
         M.text ""

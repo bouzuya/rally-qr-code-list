@@ -1,14 +1,30 @@
 module Client.Main
   (main) where
 
+import Data.List (List)
 import Effect (Effect)
 import Effect.Class.Console (log)
-import Prelude (Unit, bind, discard)
+import Prelude (Unit, bind, discard, (=<<))
 import Pux as Pux
-import Pux.Renderer.React as PR
+import Pux.DOM.HTML (HTML)
+import Pux.Renderer.React (renderToReact)
+import React (ReactClass)
 import Share.Event (foldp)
 import Share.State as State
 import Share.View.ClientRoot as ClientRoot
+import Signal (Signal)
+import Signal.Channel (Channel)
+
+foreign import hydrateImpl :: ∀ props. String -> ReactClass props -> Effect Unit
+
+hydrate
+  :: forall ev
+  .  String
+  -> Signal (HTML ev)
+  -> Channel (List ev)
+  -> Effect Unit
+hydrate selector markup input =
+  hydrateImpl selector =<< renderToReact markup input
 
 main :: Effect Unit
 main = do
@@ -21,4 +37,4 @@ main = do
       , inputs: []
       }
   app <- Pux.start puxConfig
-  PR.renderToDOM ".client-root" app.markup app.input
+  hydrate ".root" app.markup app.input
