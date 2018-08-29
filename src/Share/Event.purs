@@ -18,8 +18,10 @@ data Event
   | SignIn DOMEvent
 
 foldp :: Event -> State -> EffModel State Event
-foldp (EmailChange event) state = noEffects $ state { email = targetValue event }
-foldp (PasswordChange event) state = noEffects $ state { password = targetValue event }
+foldp (EmailChange event) state =
+  noEffects $ state { email = targetValue event }
+foldp (PasswordChange event) state =
+  noEffects $ state { password = targetValue event }
 foldp (SignIn event) state =
   { state
   , effects:

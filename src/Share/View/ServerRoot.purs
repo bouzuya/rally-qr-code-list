@@ -1,7 +1,7 @@
 module Share.View.ServerRoot
   (view) where
 
-import Prelude (discard, ($))
+import Prelude (discard, ($), (<>))
 import Pux.DOM.HTML as P
 import Share.Event (Event)
 import Share.State (State)
@@ -20,5 +20,7 @@ view state = do
     H.body $ do
       H.div M.! HA.className "root" $ do
         ClientRoot.view state
-      H.script M.! HA.src "http://localhost:8081/script/index.js" $ do -- TODO
+      H.script M.! HA.src scriptUrl $ do
         M.text ""
+  where
+    scriptUrl = state.config.assetsBaseUrl <> "/script/index.js"

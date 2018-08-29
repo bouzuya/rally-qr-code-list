@@ -1,7 +1,7 @@
 module Share.View.SignInForm
   (view) where
 
-import Prelude (const, discard, ($))
+import Prelude (discard, ($))
 import Pux.DOM.Events as PE
 import Pux.DOM.HTML as P
 import Share.Event (Event(..))

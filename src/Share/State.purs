@@ -4,12 +4,18 @@ module Share.State
   ) where
 
 type State =
-  { email :: String
+  { config ::
+    { assetsBaseUrl :: String
+    }
+  , email :: String
   , password :: String
   }
 
 init :: State
 init =
-  { email: "email@example.com"
+  { config:
+    { assetsBaseUrl: "http://localhost:8081" -- TODO: production
+    }
+  , email: "email@example.com"
   , password: "pass1"
   }
