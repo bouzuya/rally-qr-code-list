@@ -3,13 +3,19 @@ module Share.Event
   , foldp
   ) where
 
+import Bouzuya.HTTP.Client (body, fetch, headers, method, url)
+import Bouzuya.HTTP.Method as Method
 import Data.Maybe (Maybe(..))
+import Data.Options ((:=))
+import Data.Tuple (Tuple(..))
 import Effect.Class (liftEffect)
 import Effect.Console (log)
-import Prelude (discard, pure, ($), (<>))
+import Foreign.Object as Object
+import Prelude (bind, discard, pure, show, ($), (<>))
 import Pux (EffModel, noEffects)
 import Pux.DOM.Events (DOMEvent, targetValue)
 import Share.State (State)
+import Simple.JSON (writeJSON)
 import Web.Event.Event (preventDefault)
 
 data Event
@@ -28,6 +34,13 @@ foldp (SignIn event) state =
     [ do
         liftEffect $ preventDefault event
         liftEffect $ log $ "SignIn: " <> state.email <> ":" <> state.password
+        response <-
+          fetch
+            ( body := writeJSON { email: state.email, password: state.password }
+            <> headers := Object.fromFoldable [Tuple "Content-Type" "application/json"]
+            <> method := Method.POST
+            <> url := "https://api.rallyapp.jp/tokens")
+        liftEffect $ log $ show response.body
         pure Nothing
     ]
   }
