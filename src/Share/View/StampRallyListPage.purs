@@ -1,4 +1,4 @@
-module Share.View.StampRallyList
+module Share.View.StampRallyListPage
   (view) where
 
 import Prelude (discard, ($))
@@ -11,7 +11,7 @@ import Text.Smolder.Markup as M
 
 view :: State -> P.HTML Event
 view state = do
-  H.div M.! HA.className "stamp-rally-list" $ do
+  H.section M.! HA.className "stamp-rally-list-page" $ do
     H.header $ do
       H.h1 $ do
         M.text "Stamp Rally List"

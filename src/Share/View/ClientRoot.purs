@@ -6,8 +6,8 @@ import Pux.DOM.HTML as P
 import Share.Event (Event)
 import Share.Route as Route
 import Share.State (State)
-import Share.View.SignInForm as SignInForm
-import Share.View.StampRallyList as StampRallyList
+import Share.View.SignInPage as SignInPage
+import Share.View.StampRallyListPage as StampRallyListPage
 import Text.Smolder.HTML as H
 import Text.Smolder.HTML.Attributes as HA
 import Text.Smolder.Markup as M
@@ -23,9 +23,9 @@ view state = do
         M.text "Hello!"
       case state.route of
         Route.SignIn ->
-          SignInForm.view state
+          SignInPage.view state
         Route.StampRallyList ->
-          StampRallyList.view state
+          StampRallyListPage.view state
     H.footer $ do
       H.div M.! HA.className "source-code" $ do
         H.a M.! HA.href "https://github.com/bouzuya/rally-qr-code-list" $ do
