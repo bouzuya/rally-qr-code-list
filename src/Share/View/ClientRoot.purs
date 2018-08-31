@@ -19,8 +19,6 @@ view state = do
       H.h1 $ do
         M.text "RALLY QR code list"
     H.div M.! HA.className "body" $ do
-      H.p $ do
-        M.text "Hello!"
       case state.route of
         Route.SignIn ->
           SignInPage.view state
