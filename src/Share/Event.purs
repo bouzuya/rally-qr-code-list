@@ -10,14 +10,14 @@ import Prelude (bind, discard, pure, show, ($), (<$>), (<>))
 import Pux (EffModel, noEffects)
 import Pux.DOM.Events (DOMEvent, targetValue)
 import Share.Request (RallyToken, createToken)
-import Share.Route (Route)
+import Share.Route as Route
 import Share.State (State)
 import Web.Event.Event (preventDefault)
 
 data Event
   = EmailChange DOMEvent
   | PasswordChange DOMEvent
-  | RouteChange Route
+  | RouteChange Route.Route
   | SignIn DOMEvent
   | SignInSuccess RallyToken
 
@@ -39,10 +39,8 @@ foldp (SignIn event) state =
     ]
   }
 foldp (SignInSuccess token) state =
-  { state
+  { state: state { token = Just token }
   , effects:
-    [ do
-        liftEffect $ log $ show token
-        pure Nothing
+    [ pure (Just (RouteChange Route.StampRallyList))
     ]
   }
