@@ -41,7 +41,8 @@ foldp (EmailChange event) state =
   noEffects $ state { email = targetValue event }
 foldp (PasswordChange event) state =
   noEffects $ state { password = targetValue event }
-foldp (RouteChange route) state = noEffects state -- TODO
+foldp (RouteChange route) state =
+  noEffects $ state { route = route }
 foldp (SignIn event) state =
   { state
   , effects:
