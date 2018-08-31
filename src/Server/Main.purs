@@ -39,7 +39,7 @@ handleRequest :: Request -> Aff Response
 handleRequest _ = do
   let
     puxConfig =
-      { initialState: State.init
+      { initialState: State.init -- TODO: routing
       , view: ServerRoot.view
       , foldp
       , inputs: []
