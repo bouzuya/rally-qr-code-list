@@ -17,7 +17,7 @@ import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Effect.Class.Console (log)
 import Foreign.Object as Object
-import Prelude (bind, const, discard, map, pure, show, (<#>), (<$>), (<>))
+import Prelude (bind, const, discard, map, pure, show, (<>))
 import Simple.JSON (readJSON, writeJSON)
 
 type RallyStampRallyList =
