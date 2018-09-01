@@ -1,7 +1,9 @@
 module Share.View.StampRallyListPage
   (view) where
 
-import Prelude (discard, ($))
+import Data.Foldable (for_)
+import Data.Maybe (Maybe(..))
+import Prelude (discard, map, ($))
 import Pux.DOM.HTML as P
 import Share.Event (Event)
 import Share.State (State)
@@ -18,5 +20,11 @@ view state = do
     H.div M.! HA.className "body" $ do
       H.p $ do
         M.text "Stamp Rally List!"
+      H.ul $ do
+        case state.stampRallyList of
+          Nothing -> M.text "no stamp rally"
+          Just stampRallyList ->
+            for_ stampRallyList \i -> do
+              H.li $ M.text i.displayName
     H.footer do
       M.text ""
