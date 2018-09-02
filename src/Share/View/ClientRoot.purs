@@ -7,6 +7,7 @@ import Share.Event (Event)
 import Share.Route as Route
 import Share.State (State)
 import Share.View.SignInPage as SignInPage
+import Share.View.StampRallyDetailPage as StampRallyDetailPage
 import Share.View.StampRallyListPage as StampRallyListPage
 import Text.Smolder.HTML as H
 import Text.Smolder.HTML.Attributes as HA
@@ -22,6 +23,8 @@ view state = do
       case state.route of
         Route.SignIn ->
           SignInPage.view state
+        Route.StampRallyDetail stampRallyId ->
+          StampRallyDetailPage.view state stampRallyId
         Route.StampRallyList ->
           StampRallyListPage.view state
     H.footer $ do
