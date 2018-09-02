@@ -8,7 +8,7 @@ import Effect.Class (liftEffect)
 import Prelude (bind, discard, pure, ($), (<$>))
 import Pux (EffModel, noEffects, onlyEffects)
 import Pux.DOM.Events (DOMEvent, targetValue)
-import Share.Request (RallyToken, StampRally, createToken, getStampRallyList)
+import Share.Request (Token, StampRally, createToken, getStampRallyList)
 import Share.Route as Route
 import Share.State (State)
 import Web.Event.Event (preventDefault)
@@ -20,7 +20,7 @@ data Event
   | PasswordChange DOMEvent
   | RouteChange Route.Route
   | SignIn DOMEvent
-  | SignInSuccess RallyToken
+  | SignInSuccess Token
 
 foldp :: Event -> State -> EffModel State Event
 foldp (EmailChange event) state =
