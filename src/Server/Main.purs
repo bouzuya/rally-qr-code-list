@@ -14,7 +14,7 @@ import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Effect.Class.Console (log)
-import Prelude (Unit, bind, discard, pure, show, (<<<), (<>))
+import Prelude (Unit, bind, pure, show, (<<<), (<>))
 import Pux as Pux
 import Pux.Renderer.React (renderToStaticMarkup)
 import Share.Event (foldp)
@@ -58,6 +58,5 @@ handleRequest _ = do
 
 main :: Effect Unit
 main = do
-  log "start server"
   let serverOptions = { hostname: "0.0.0.0", port: 8080 }
   Server.run serverOptions (handleListen serverOptions) handleRequest

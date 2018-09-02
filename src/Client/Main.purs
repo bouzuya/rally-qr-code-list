@@ -3,8 +3,7 @@ module Client.Main
 
 import Data.List (List)
 import Effect (Effect)
-import Effect.Class.Console (log)
-import Prelude (Unit, bind, discard, (=<<))
+import Prelude (Unit, bind, (=<<))
 import Pux as Pux
 import Pux.DOM.HTML (HTML)
 import Pux.DOM.History as PH
@@ -34,7 +33,6 @@ match path = RouteChange (route path)
 
 main :: Effect Unit
 main = do
-  log "client"
   urlSignal <- PH.sampleURL =<< window
   let
     routeSignal = urlSignal ~> match

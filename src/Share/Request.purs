@@ -14,10 +14,8 @@ import Data.Nullable (Nullable, toMaybe)
 import Data.Options ((:=))
 import Data.Tuple (Tuple(..))
 import Effect.Aff (Aff)
-import Effect.Class (liftEffect)
-import Effect.Class.Console (log)
 import Foreign.Object as Object
-import Prelude (bind, const, discard, map, pure, show, (<>))
+import Prelude (bind, const, map, pure, (<>))
 import Simple.JSON (readJSON, writeJSON)
 
 type RallyStampRallyList =
@@ -89,7 +87,6 @@ getStampRallyList' token = do
             , Tuple "Authorization" ("Token token=" <> token.token)]
       <> method := Method.GET
       <> url := ("https://api.rallyapp.jp/users/" <> token.userId <> "/stamp_rallies"))
-  liftEffect (log (show response))
   pure do
     body <- response.body
     stampRallyList <- either (const Nothing) Just (readJSON body)
