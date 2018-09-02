@@ -18,6 +18,7 @@ import Data.Nullable (Nullable)
 import Data.Options ((:=))
 import Data.Tuple (Tuple(..))
 import Effect.Aff (Aff)
+import Foreign.Object (Object)
 import Foreign.Object as Object
 import Prelude (bind, const, pure, (<>))
 import Simple.JSON (readJSON, writeJSON)
@@ -83,14 +84,25 @@ type Token =
   , userId :: String
   }
 
+baseUrl :: String
+baseUrl = "https://api.rallyapp.jp"
+
+buildHeaders :: Object String
+buildHeaders = Object.fromFoldable [Tuple "Content-Type" "application/json"]
+
+buildHeadersWithToken :: Token -> Object String
+buildHeadersWithToken token =
+  Object.insert "Authorization" ("Token token=" <> token.token) buildHeaders
+
 createToken :: { email :: String, password :: String } -> Aff (Maybe Token)
 createToken params = do
+  let path = "/tokens"
   response <-
     fetch
       ( body := writeJSON params
-      <> headers := Object.fromFoldable [Tuple "Content-Type" "application/json"]
+      <> headers := buildHeaders
       <> method := Method.POST
-      <> url := "https://api.rallyapp.jp/tokens")
+      <> url := (baseUrl <> path))
   pure do
     body <- response.body
     token <- either (const Nothing) Just (readJSON body)
@@ -98,14 +110,12 @@ createToken params = do
 
 getSpotList :: Token -> String -> Aff (Maybe SpotList)
 getSpotList token stampRallyId = do
+  let path = "/stamp_rallies/" <> stampRallyId <> "/spots"
   response <-
     fetch
-      ( headers :=
-          Object.fromFoldable
-            [ Tuple "Content-Type" "application/json"
-            , Tuple "Authorization" ("Token token=" <> token.token)]
+      ( headers := buildHeadersWithToken token
       <> method := Method.GET
-      <> url := ("https://api.rallyapp.jp/stamp_rallies/" <> stampRallyId <> "/spots?view_type=admin"))
+      <> url := (baseUrl <> path <> "?view_type=admin"))
   pure do
     body <- response.body
     spotList <- either (const Nothing) Just (readJSON body)
@@ -113,14 +123,12 @@ getSpotList token stampRallyId = do
 
 getStampRallyList :: Token -> Aff (Maybe StampRallyList)
 getStampRallyList token = do
+  let path = "/users/" <> token.userId <> "/stamp_rallies"
   response <-
     fetch
-      ( headers :=
-          Object.fromFoldable
-            [ Tuple "Content-Type" "application/json"
-            , Tuple "Authorization" ("Token token=" <> token.token)]
+      ( headers := buildHeadersWithToken token
       <> method := Method.GET
-      <> url := ("https://api.rallyapp.jp/users/" <> token.userId <> "/stamp_rallies"))
+      <> url := (baseUrl <> path))
   pure do
     body <- response.body
     stampRallyList <- either (const Nothing) Just (readJSON body)
