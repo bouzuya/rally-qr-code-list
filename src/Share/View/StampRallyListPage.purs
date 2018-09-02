@@ -20,10 +20,10 @@ view state = do
       H.h1 $ do
         M.text "Stamp Rally List"
     H.div M.! HA.className "body" $ do
-      H.ul $ do
-        case state.stampRallyList of
-          Nothing -> M.text "no stamp rally"
-          Just stampRallyList ->
+      case state.stampRallyList of
+        Nothing -> M.text "no stamp rally"
+        Just stampRallyList ->
+          H.ul $ do
             for_ stampRallyList \i -> do
               H.li M.#! PE.onClick (const (RouteChange (Route.StampRallyDetail i.name))) $ do
                 M.text i.displayName

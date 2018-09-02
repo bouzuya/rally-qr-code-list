@@ -4,7 +4,7 @@ module Share.State
   ) where
 
 import Data.Maybe (Maybe(..))
-import Share.Request (Token, StampRally)
+import Share.Request (Spot, StampRally, Token)
 import Share.Route (Route(..))
 
 type State =
@@ -14,6 +14,7 @@ type State =
   , email :: String
   , password :: String
   , route :: Route
+  , spotList :: Maybe (Array Spot)
   , stampRallyList :: Maybe (Array StampRally)
   , token :: Maybe Token
   }
@@ -26,6 +27,7 @@ init =
   , email: "email@example.com"
   , password: "pass1"
   , route: SignIn
+  , spotList: Nothing
   , stampRallyList: Nothing
   , token: Nothing
   }

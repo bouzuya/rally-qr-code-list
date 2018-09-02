@@ -8,13 +8,15 @@ import Effect.Class (liftEffect)
 import Prelude (bind, discard, pure, ($), (<$>))
 import Pux (EffModel, noEffects, onlyEffects)
 import Pux.DOM.Events (DOMEvent, targetValue)
-import Share.Request (Token, StampRally, createToken, getStampRallyList)
+import Share.Request (Spot, StampRally, Token, createToken, getSpotList, getStampRallyList)
 import Share.Route as Route
 import Share.State (State)
 import Web.Event.Event (preventDefault)
 
 data Event
   = EmailChange DOMEvent
+  | FetchSpotList String
+  | FetchSpotListSuccess (Array Spot)
   | FetchStampRallyList
   | FetchStampRallyListSuccess (Array StampRally)
   | PasswordChange DOMEvent
@@ -25,6 +27,22 @@ data Event
 foldp :: Event -> State -> EffModel State Event
 foldp (EmailChange event) state =
   noEffects $ state { email = targetValue event }
+foldp (FetchSpotList stampRallyid) state =
+  onlyEffects
+    state
+    [
+      do
+        case state.spotList of
+          Just _ -> pure Nothing
+          Nothing ->
+            case state.token of
+              Just token -> do
+                spotListMaybe <- getSpotList token stampRallyid
+                pure (FetchSpotListSuccess <$> spotListMaybe)
+              Nothing -> pure Nothing
+    ]
+foldp (FetchSpotListSuccess spotList) state =
+  noEffects $ state { spotList = Just spotList }
 foldp FetchStampRallyList state =
   onlyEffects
     state
@@ -48,6 +66,8 @@ foldp (RouteChange route) state =
   , effects:
     [ do
         case route of
+          Route.StampRallyDetail stampRallyId ->
+            pure (Just (FetchSpotList stampRallyId))
           Route.StampRallyList ->
             pure (Just FetchStampRallyList)
           _ ->

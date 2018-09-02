@@ -1,10 +1,11 @@
 module Share.View.StampRallyDetailPage
   (view) where
 
+import Data.Foldable (for_)
+import Data.Maybe (Maybe(..))
 import Prelude (discard, ($))
 import Pux.DOM.HTML as P
 import Share.Event (Event)
-import Share.Route as Route
 import Share.State (State)
 import Text.Smolder.HTML as H
 import Text.Smolder.HTML.Attributes as HA
@@ -19,5 +20,12 @@ view state stampRallyId = do
     H.div M.! HA.className "body" $ do
       H.p $ do
         M.text stampRallyId
+      case state.spotList of
+        Nothing -> M.text "no spot"
+        Just spotList ->
+          H.ul $ do
+            for_ spotList \i -> do
+              H.li $ do
+                M.text i.name
     H.footer do
       M.text ""
