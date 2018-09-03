@@ -5,6 +5,7 @@ module Share.Request.Rally
   , StampRallyList
   , StampRallySummary
   , Token
+  , createShortenUrlToStampByQrCode
   , createToken
   , getSpotList
   , getStampRallyList
@@ -28,6 +29,12 @@ type Image =
   , position :: Int
   , s64 :: String -- URL
   , s640 :: String -- URL
+  }
+
+type ShortenUrl =
+  { expandUrl :: String -- URL
+  , name :: String
+  , shortenUrl :: String -- URL
   }
 
 type SpotList =
@@ -93,6 +100,24 @@ buildHeaders = Object.fromFoldable [Tuple "Content-Type" "application/json"]
 buildHeadersWithToken :: Token -> Object String
 buildHeadersWithToken token =
   Object.insert "Authorization" ("Token token=" <> token.token) buildHeaders
+
+createShortenUrlToStampByQrCode :: String -> Int -> String -> Aff (Maybe ShortenUrl)
+createShortenUrlToStampByQrCode stampRallyId spotId qrCodeToken = do
+  let path = "/s"
+  response <-
+    fetch
+      ( body :=
+          writeJSON
+            { qr_code_token: qrCodeToken
+            , spot_id: spotId
+            , stamp_rally_id: stampRallyId }
+      <> headers := buildHeaders
+      <> method := Method.POST
+      <> url := (baseUrl <> path <> "?view_type=admin"))
+  pure do
+    body <- response.body
+    shortenUrl <- either (const Nothing) Just (readJSON body)
+    pure shortenUrl :: Maybe ShortenUrl
 
 createToken :: { email :: String, password :: String } -> Aff (Maybe Token)
 createToken params = do
