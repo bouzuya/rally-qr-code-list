@@ -21,7 +21,7 @@ view state = do
         M.text "Stamp Rally List"
     H.div M.! HA.className "body" $ do
       case state.stampRallyList of
-        Nothing -> M.text "no stamp rally"
+        Nothing -> M.text "loading..."
         Just stampRallyList ->
           H.ul $ do
             for_ stampRallyList \i -> do

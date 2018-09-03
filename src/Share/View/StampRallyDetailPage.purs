@@ -21,7 +21,7 @@ view state stampRallyId = do
       H.p $ do
         M.text stampRallyId
       case state.spotList of
-        Nothing -> M.text "no spot"
+        Nothing -> M.text "loading..."
         Just spotList ->
           H.ul $ do
             for_ spotList \i -> do
