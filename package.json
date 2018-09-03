@@ -35,7 +35,7 @@
     "postinstall": "psc-package install",
     "psc-package": "psc-package",
     "purs": "purs",
-    "repl": "psc-package repl",
+    "repl": "psc-package repl -- 'test/**/*.purs'",
     "start": "node -e \"require('./output/Server.Main').main();\"",
     "test": "node -e \"require('./output/Test.Main').main();\"",
     "watch": "npm-run-all -p 'watch:*'",

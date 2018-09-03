@@ -13,14 +13,14 @@ module Share.Request.Rally
 import Bouzuya.HTTP.Client (body, fetch, headers, method, url)
 import Bouzuya.HTTP.Method as Method
 import Data.Either (either)
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), maybe)
 import Data.Nullable (Nullable)
 import Data.Options ((:=))
 import Data.Tuple (Tuple(..))
 import Effect.Aff (Aff)
 import Foreign.Object (Object)
 import Foreign.Object as Object
-import Prelude (bind, const, pure, (<>))
+import Prelude (bind, const, map, pure, show, (+), (<>))
 import Simple.JSON (readJSON, writeJSON)
 
 type Image =
@@ -110,16 +110,32 @@ createToken params = do
 
 getSpotList :: Token -> String -> Aff (Maybe SpotList)
 getSpotList token stampRallyId = do
-  let path = "/stamp_rallies/" <> stampRallyId <> "/spots"
-  response <-
-    fetch
-      ( headers := buildHeadersWithToken token
-      <> method := Method.GET
-      <> url := (baseUrl <> path <> "?view_type=admin"))
-  pure do
-    body <- response.body
-    spotList <- either (const Nothing) Just (readJSON body)
-    pure spotList :: Maybe SpotList
+  spotsMaybe <- g Nothing 1
+  pure (map (\spots -> { hasNextPage: false, spots }) spotsMaybe)
+  where
+    g :: Maybe (Array SpotSummary) -> Int -> Aff (Maybe (Array SpotSummary))
+    g result page = do
+      spotListMaybe <- f 100 page
+      case spotListMaybe of
+        Nothing -> pure result
+        Just c ->
+          let
+            newResult = maybe (Just c.spots) (\r -> Just (r <> c.spots)) result
+          in
+            if c.hasNextPage
+            then g newResult (page + 1)
+            else pure newResult
+    f per page = do
+      let path = "/stamp_rallies/" <> stampRallyId <> "/spots"
+      response <-
+        fetch
+          ( headers := buildHeadersWithToken token
+          <> method := Method.GET
+          <> url := (baseUrl <> path <> "?per=" <> show per <> "&page=" <> show page <> "&view_type=admin"))
+      pure do
+        body <- response.body
+        spotList <- either (const Nothing) Just (readJSON body)
+        pure spotList :: Maybe SpotList
 
 getStampRallyList :: Token -> Aff (Maybe StampRallyList)
 getStampRallyList token = do
