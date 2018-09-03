@@ -24,8 +24,8 @@ init =
   { config:
     { assetsBaseUrl: "http://localhost:8081" -- TODO: production
     }
-  , email: "email@example.com"
-  , password: "pass1"
+  , email: ""
+  , password: ""
   , route: SignIn
   , spotList: Nothing
   , stampRallyList: Nothing
