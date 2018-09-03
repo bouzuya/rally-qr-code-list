@@ -1,5 +1,7 @@
 module Share.Request.Rally
-  ( Image
+  ( Detail
+  , Image
+  , SpotDetail
   , SpotList
   , SpotSummary
   , StampRallyList
@@ -7,6 +9,7 @@ module Share.Request.Rally
   , Token
   , createShortenUrlToStampByQrCode
   , createToken
+  , getSpotDetail
   , getSpotList
   , getStampRallyList
   ) where
@@ -24,6 +27,13 @@ import Foreign.Object as Object
 import Prelude (bind, const, map, pure, show, (+), (<>))
 import Simple.JSON (readJSON, writeJSON)
 
+type Detail =
+  { id :: Int
+  , name :: String
+  , position :: Int
+  , value :: String
+  }
+
 type Image =
   { id :: String
   , position :: Int
@@ -35,6 +45,40 @@ type ShortenUrl =
   { expandUrl :: String -- URL
   , name :: String
   , shortenUrl :: String -- URL
+  }
+
+type SpotDetail =
+  { description :: Nullable String
+  , details :: Array Detail
+  , detailsCountLimit :: Int
+  , displayEndDatetime :: String -- DateTime
+  , displayEndDatetimeSpecified :: Boolean
+  , displayStartDatetime :: String -- DateTime
+  , displayStartDatetimeSpecified :: Boolean
+  , endDatetime :: String -- DateTime
+  , endDatetimeSpecified :: Boolean
+  , id :: Int
+  , images :: Array Image
+  , lat :: String -- Number
+  , lng :: String -- Number
+  , lockVersion :: Int
+  , name :: String
+  , position :: Nullable Int
+  , qrCodeToken :: String
+  , radius :: Nullable Int
+  , stampByKeyword :: Boolean
+  , stampByLocation :: Boolean
+  , stampByQrCode :: Boolean
+  , stampDurationEndTime :: Nullable String -- DateTime
+  , stampDurationStartTime :: Nullable String -- DateTime
+  , stampImages :: Array Image
+  , stampKeyword :: Nullable String
+  , stampRallyId :: String
+  , stampTypeSpecified :: Boolean
+  , startDatetime :: String -- DateTime
+  , startDatetimeSpecified :: Boolean
+  , tagline :: Nullable String
+  , zoom :: Int
   }
 
 type SpotList =
@@ -132,6 +176,19 @@ createToken params = do
     body <- response.body
     token <- either (const Nothing) Just (readJSON body)
     pure token :: Maybe Token
+
+getSpotDetail :: Token -> Int -> Aff (Maybe SpotDetail)
+getSpotDetail token spotId = do
+  let path = "/spots/" <> show spotId
+  response <-
+    fetch
+      ( headers := buildHeadersWithToken token
+      <> method := Method.GET
+      <> url := (baseUrl <> path <> "?view_type=admin"))
+  pure do
+    body <- response.body
+    spotList <- either (const Nothing) Just (readJSON body)
+    pure spotList :: Maybe SpotDetail
 
 getSpotList :: Token -> String -> Aff (Maybe SpotList)
 getSpotList token stampRallyId = do
