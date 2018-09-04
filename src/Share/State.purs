@@ -1,11 +1,16 @@
 module Share.State
   ( State
+  , deserialize
   , init
+  , serialize
   ) where
 
+import Data.Either (either)
 import Data.Maybe (Maybe(..))
+import Prelude (const)
 import Share.Request (Spot, StampRally, Token)
 import Share.Route (Route(..))
+import Simple.JSON (readJSON, writeJSON)
 
 type State =
   { config ::
@@ -20,6 +25,9 @@ type State =
   , token :: Maybe Token
   }
 
+deserialize :: String -> Maybe State
+deserialize s = either (const Nothing) Just (readJSON s)
+
 init :: State
 init =
   { config:
@@ -33,3 +41,6 @@ init =
   , stampRallyList: Nothing
   , token: Nothing
   }
+
+serialize :: State -> String
+serialize = writeJSON
