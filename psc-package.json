@@ -3,6 +3,7 @@
   "set": "bouzuya-20180824",
   "source": "https://github.com/bouzuya/package-sets.git",
   "depends": [
+    "aff-promise",
     "arraybuffer",
     "bouzuya-http-client",
     "bouzuya-http-server",

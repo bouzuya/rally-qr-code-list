@@ -1,5 +1,6 @@
 module Test.Main
   ( main
+  , showQrCodeDataUrl
   , showShortenUrl
   , showSpotDetail
   , showSpotList ) where
@@ -11,10 +12,16 @@ import Effect.Class (liftEffect)
 import Effect.Console (log)
 import Effect.Exception (throw)
 import Prelude (Unit, bind, discard, pure, show)
+import Share.QrCode as QrCode
 import Share.Request.Rally as Rally
 
 main :: Effect Unit
 main = log "Test"
+
+showQrCodeDataUrl :: String -> Effect Unit
+showQrCodeDataUrl text = launchAff_ do
+  dataUrl <- QrCode.toDataUrl QrCode.L text
+  liftEffect (log dataUrl)
 
 showShortenUrl :: String -> Int -> String -> Effect Unit
 showShortenUrl stampRallyId spotId qrCodeToken = launchAff_ do
