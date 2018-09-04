@@ -65,7 +65,7 @@ type SpotDetail =
   , name :: String
   , position :: Nullable Int
   , qrCodeToken :: String
-  , radius :: Nullable Int
+  , radius :: Nullable String -- Number
   , stampByKeyword :: Boolean
   , stampByLocation :: Boolean
   , stampByQrCode :: Boolean
