@@ -87,19 +87,19 @@ type SpotList =
   }
 
 type SpotSummary =
-  { description :: String
+  { description :: Nullable String
   , id :: Int
   , image :: Nullable Image
   , lat :: String -- Number
   , lng :: String -- Number
   , lockVersion :: Int
   , name :: String
-  , position :: Int
+  , position :: Nullable Int
   , stampByLocation :: Boolean
   , stampByQrCode :: Boolean
   , stampImage :: Nullable Image
   , stampRallyId :: String
-  , tagline :: String
+  , tagline :: Nullable String
   , zoom :: Int
   }
 
