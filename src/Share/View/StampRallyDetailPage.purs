@@ -26,6 +26,9 @@ view state stampRallyId = do
           H.ul $ do
             for_ spotList \i -> do
               H.li $ do
-                M.text i.name
+                H.span M.! HA.className "name" $ do
+                  M.text i.name
+                H.span M.! HA.className "url" $ do
+                  M.text i.shortenUrl
     H.footer do
       M.text ""
