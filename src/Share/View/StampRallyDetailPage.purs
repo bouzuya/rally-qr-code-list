@@ -1,9 +1,9 @@
 module Share.View.StampRallyDetailPage
   (view) where
 
-import Data.Foldable (for_)
+import Data.Foldable (find, for_)
 import Data.Maybe (Maybe(..))
-import Prelude (discard, ($))
+import Prelude (discard, ($), (==))
 import Pux.DOM.HTML as P
 import Share.Event (Event)
 import Share.State (State)
@@ -30,5 +30,9 @@ view state stampRallyId = do
                   M.text i.name
                 H.span M.! HA.className "url" $ do
                   M.text i.shortenUrl
+                H.span M.! HA.className "qr-code" $ do
+                  case find (\{ spotId } -> spotId == i.id) state.qrCodeList of
+                    Nothing -> M.text "loding..."
+                    Just { dataUrl } -> H.img M.! HA.src dataUrl
     H.footer do
       M.text ""

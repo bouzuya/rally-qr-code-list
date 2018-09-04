@@ -13,6 +13,7 @@ type State =
     }
   , email :: String
   , password :: String
+  , qrCodeList :: Array { spotId :: Int, dataUrl :: String }
   , route :: Route
   , spotList :: Maybe (Array Spot)
   , stampRallyList :: Maybe (Array StampRally)
@@ -26,6 +27,7 @@ init =
     }
   , email: ""
   , password: ""
+  , qrCodeList: []
   , route: SignIn
   , spotList: Nothing
   , stampRallyList: Nothing

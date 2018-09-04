@@ -4,10 +4,13 @@ module Share.Event
   ) where
 
 import Data.Maybe (Maybe(..))
+import Data.Traversable (traverse)
+import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Prelude (bind, discard, pure, ($), (<$>))
 import Pux (EffModel, noEffects, onlyEffects)
 import Pux.DOM.Events (DOMEvent, targetValue)
+import Share.QrCode as QrCode
 import Share.Request (Spot, StampRally, Token, createToken, getSpotList, getStampRallyList)
 import Share.Route as Route
 import Share.State (State)
@@ -20,6 +23,7 @@ data Event
   | FetchStampRallyList
   | FetchStampRallyListSuccess (Array StampRally)
   | PasswordChange DOMEvent
+  | UpdateQrCodeList (Array { dataUrl :: String, spotId :: Int })
   | RouteChange Route.Route
   | SignIn DOMEvent
   | SignInSuccess Token
@@ -42,7 +46,18 @@ foldp (FetchSpotList stampRallyid) state =
               Nothing -> pure Nothing
     ]
 foldp (FetchSpotListSuccess spotList) state =
-  noEffects $ state { spotList = Just spotList }
+  { state: state { spotList = Just spotList }
+  , effects: [
+      do
+        let
+          generateQrCode :: Spot -> Aff { dataUrl :: String, spotId :: Int }
+          generateQrCode spot = do
+            dataUrl <- QrCode.toDataUrl QrCode.M spot.shortenUrl
+            pure { dataUrl: dataUrl, spotId: spot.id }
+        qrCodeList <- traverse generateQrCode spotList
+        pure (Just (UpdateQrCodeList qrCodeList))
+    ]
+  }
 foldp FetchStampRallyList state =
   onlyEffects
     state
@@ -89,3 +104,5 @@ foldp (SignInSuccess token) state =
     [ pure (Just (RouteChange Route.StampRallyList))
     ]
   }
+foldp (UpdateQrCodeList qrCodeList) state =
+  noEffects $ state { qrCodeList = qrCodeList }
