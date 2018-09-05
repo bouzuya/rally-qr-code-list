@@ -1,6 +1,7 @@
 module Share.View.ClientRoot
   (view) where
 
+import Data.Maybe (Maybe(..))
 import Prelude (discard, ($))
 import Pux.DOM.Events as PE
 import Pux.DOM.HTML as P
@@ -21,8 +22,12 @@ view state = do
       H.h1 $ do
         M.text "RALLY QR code list"
       H.div $ do
-        H.button M.#! PE.onClick SignOut $ do
-          M.text "Sign Out"
+        case state.token of
+          Nothing ->
+            M.text ""
+          Just _ -> do
+            H.button M.#! PE.onClick SignOut $ do
+              M.text "Sign Out"
     H.div M.! HA.className "body" $ do
       case state.route of
         Route.SignIn ->
