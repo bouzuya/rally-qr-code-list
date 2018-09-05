@@ -12,6 +12,7 @@ import Share.Request (Token)
 import Simple.JSON (readJSON, writeJSON)
 
 foreign import loadTokenImpl :: Effect (Nullable String)
+foreign import removeTokenImpl :: Effect Unit
 foreign import saveTokenImpl :: String -> Effect Unit
 
 loadToken :: Effect (Maybe Token)
@@ -22,6 +23,6 @@ loadToken = do
     Nothing -> Nothing
     Just r -> either (const Nothing) Just (readJSON r)
 
-saveToken :: Token -> Effect Unit
-saveToken token = saveTokenImpl (writeJSON token)
-
+saveToken :: Maybe Token -> Effect Unit
+saveToken (Just token) = saveTokenImpl (writeJSON token)
+saveToken Nothing = removeTokenImpl

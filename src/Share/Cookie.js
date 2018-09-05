@@ -15,6 +15,11 @@ exports.loadTokenImpl = function () {
   return storage.getItem('rally-qr-code-list-token');
 };
 
+exports.removeTokenImpl = function () {
+  var storage = getStorage();
+  return storage.removeItem('rally-qr-code-list-token');
+};
+
 exports.saveTokenImpl = function (value) {
   return function () {
     var storage = getStorage();

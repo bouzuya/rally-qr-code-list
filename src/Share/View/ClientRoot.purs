@@ -2,8 +2,9 @@ module Share.View.ClientRoot
   (view) where
 
 import Prelude (discard, ($))
+import Pux.DOM.Events as PE
 import Pux.DOM.HTML as P
-import Share.Event (Event)
+import Share.Event (Event(..))
 import Share.Route as Route
 import Share.State (State)
 import Share.View.SignInPage as SignInPage
@@ -19,6 +20,9 @@ view state = do
     H.header $ do
       H.h1 $ do
         M.text "RALLY QR code list"
+      H.div $ do
+        H.button M.#! PE.onClick SignOut $ do
+          M.text "Sign Out"
     H.div M.! HA.className "body" $ do
       case state.route of
         Route.SignIn ->

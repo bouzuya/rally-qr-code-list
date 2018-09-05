@@ -24,10 +24,11 @@ data Event
   | FetchStampRallyList
   | FetchStampRallyListSuccess (Array StampRally)
   | PasswordChange DOMEvent
-  | UpdateQrCodeList (Array { dataUrl :: String, spotId :: Int })
   | RouteChange Route.Route
   | SignIn DOMEvent
   | SignInSuccess Token
+  | SignOut DOMEvent
+  | UpdateQrCodeList (Array { dataUrl :: String, spotId :: Int })
 
 foldp :: Event -> State -> EffModel State Event
 foldp (EmailChange event) state =
@@ -107,9 +108,19 @@ foldp (SignInSuccess token) state =
   , effects:
     [ pure (Just (RouteChange Route.StampRallyList))
     , do
-        liftEffect (Cookie.saveToken token)
+        liftEffect (Cookie.saveToken (Just token))
         pure Nothing
     ]
   }
+foldp (SignOut event) state =
+  { state: state { token = Nothing }
+  , effects:
+    [ do
+        liftEffect (preventDefault event)
+        liftEffect (Cookie.saveToken Nothing)
+        pure (Just (RouteChange Route.SignIn))
+    ]
+  }
+
 foldp (UpdateQrCodeList qrCodeList) state =
   noEffects $ state { qrCodeList = qrCodeList }
