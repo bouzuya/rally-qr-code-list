@@ -10,6 +10,7 @@ import Effect.Class (liftEffect)
 import Prelude (bind, discard, pure, ($), (<$>))
 import Pux (EffModel, noEffects, onlyEffects)
 import Pux.DOM.Events (DOMEvent, targetValue)
+import Share.Cookie as Cookie
 import Share.QrCode as QrCode
 import Share.Request (Spot, StampRally, Token, createToken, getSpotList, getStampRallyList)
 import Share.Route as Route
@@ -81,12 +82,15 @@ foldp (RouteChange route) state =
   , effects:
     [ do
         case route of
+          Route.SignIn -> do
+            tokenMaybe <- liftEffect Cookie.loadToken
+            case tokenMaybe of
+              Nothing -> pure Nothing
+              Just token -> pure (Just (SignInSuccess token)) -- TODO: expires
           Route.StampRallyDetail stampRallyId ->
             pure (Just (FetchSpotList stampRallyId))
           Route.StampRallyList ->
             pure (Just FetchStampRallyList)
-          _ ->
-            pure Nothing
     ]
   }
 foldp (SignIn event) state =
@@ -102,6 +106,9 @@ foldp (SignInSuccess token) state =
   { state: state { token = Just token }
   , effects:
     [ pure (Just (RouteChange Route.StampRallyList))
+    , do
+        liftEffect (Cookie.saveToken token)
+        pure Nothing
     ]
   }
 foldp (UpdateQrCodeList qrCodeList) state =

@@ -11,6 +11,7 @@
     "url": "https://github.com/bouzuya/rally-qr-code-list/issues"
   },
   "dependencies": {
+    "cookie-storage": "^3.2.0",
     "qrcode": "^1.2.2"
   },
   "devDependencies": {
