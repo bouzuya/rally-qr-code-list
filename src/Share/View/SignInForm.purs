@@ -10,21 +10,21 @@ import Text.Smolder.HTML as H
 import Text.Smolder.HTML.Attributes as HA
 import Text.Smolder.Markup as M
 
+labeledInput :: String -> String -> String -> String -> (PE.DOMEvent -> Event) -> P.HTML Event
+labeledInput type' name label value onChange = do
+  H.label M.! HA.className name $ do
+    H.span M.! HA.className "label" $ do
+      M.text label
+    H.span M.! HA.className "value" $ do
+      H.input M.! HA.name name M.! HA.type' type' M.! HA.value value M.#! PE.onChange onChange
+
 view :: State -> P.HTML Event
 view state = do
   H.form M.! HA.className "sign-in" $ do
     H.div $ do
-      H.label M.! HA.className "email" $ do
-        H.span M.! HA.className "label" $ do
-          M.text "E-Mail"
-        H.span M.! HA.className "value" $ do
-          H.input M.! HA.value state.email M.#! PE.onChange EmailChange
+      labeledInput "text" "email" "E-Mail" state.email EmailChange
     H.div $ do
-      H.label M.! HA.className "password" $ do
-        H.span M.! HA.className "label" $ do
-          M.text "Password"
-        H.span M.! HA.className "value" $ do
-          H.input M.! HA.type' "password" M.! HA.value state.password  M.#! PE.onChange PasswordChange
+      labeledInput "password" "password" "Password" state.password PasswordChange
     H.div $ do
       H.button M.! HA.className "sign-in" M.#! PE.onClick SignIn $ do
         H.span M.! HA.className "label" $ do
