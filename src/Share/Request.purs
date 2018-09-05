@@ -20,14 +20,14 @@ type Token = Rally.Token
 
 type Spot =
   { id :: Int
-  , image :: Maybe String
+  , image :: Maybe String -- URL
   , name :: String
   , shortenUrl :: String -- URL
   }
 
 type StampRally =
   { displayName :: String
-  , image :: Maybe String
+  , image :: Maybe String -- URL
   , name :: String
   }
 

@@ -26,6 +26,12 @@ view state = do
           H.ul $ do
             for_ stampRallyList \i -> do
               H.li M.#! PE.onClick (const (RouteChange (Route.StampRallyDetail i.name))) $ do
-                M.text i.displayName
+                H.span M.! HA.className "image" $ do
+                  case i.image of
+                    Nothing -> M.text ""
+                    Just imageUrl -> do
+                      H.img M.! HA.src imageUrl
+                H.span M.! HA.className "name" $ do
+                  M.text i.displayName
     H.footer do
       M.text ""
