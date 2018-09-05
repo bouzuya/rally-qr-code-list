@@ -2,8 +2,10 @@ module Client.Main
   (main) where
 
 import Data.List (List)
+import Data.Maybe (maybe)
 import Effect (Effect)
-import Prelude (Unit, bind, (=<<))
+import Effect.Exception (throw)
+import Prelude (Unit, bind, pure, (=<<))
 import Pux as Pux
 import Pux.DOM.HTML (HTML)
 import Pux.DOM.History as PH
@@ -17,7 +19,8 @@ import Signal (Signal, (~>))
 import Signal.Channel (Channel)
 import Web.HTML (window)
 
-foreign import hydrateImpl :: ∀ props. String -> ReactClass props -> Effect Unit
+foreign import hydrateImpl :: forall props. String -> ReactClass props -> Effect Unit
+foreign import loadInitialStateJson :: Effect String
 
 hydrate
   :: forall ev
@@ -33,11 +36,15 @@ match path = RouteChange (route path)
 
 main :: Effect Unit
 main = do
-  urlSignal <- PH.sampleURL =<< window
+  json <- loadInitialStateJson
+  let jsonObject = State.deserialize json
+  initialState <- maybe (throw "invalid initial state") pure jsonObject
+  w <- window
+  urlSignal <- PH.sampleURL w
   let
     routeSignal = urlSignal ~> match
     puxConfig =
-      { initialState: State.init
+      { initialState
       , view: ClientRoot.view
       , foldp
       , inputs: [routeSignal]

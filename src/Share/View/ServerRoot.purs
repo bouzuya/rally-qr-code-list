@@ -3,8 +3,10 @@ module Share.View.ServerRoot
 
 import Prelude (discard, ($), (<>))
 import Pux.DOM.HTML as P
+import Pux.DOM.HTML.Attributes as PA
 import Share.Event (Event)
 import Share.State (State)
+import Share.State as State
 import Share.View.ClientRoot as ClientRoot
 import Text.Smolder.HTML as H
 import Text.Smolder.HTML.Attributes as HA
@@ -20,7 +22,7 @@ view state = do
     H.body $ do
       H.div M.! HA.className "root" $ do
         ClientRoot.view state
-      H.script M.! HA.src scriptUrl $ do
+      H.script M.! PA.data_ "initial-state" (State.serialize state) M.! HA.src scriptUrl $ do
         M.text ""
   where
     scriptUrl = state.config.assetsBaseUrl <> "/script/index.js"

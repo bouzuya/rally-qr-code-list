@@ -12,3 +12,9 @@ exports.hydrateImpl = function (selector) {
     };
   };
 };
+
+exports.loadInitialStateJson = function () {
+  var e = document.body.querySelector("script");
+  var v = e.getAttribute("data-initial-state");
+  return v;
+};
