@@ -11,7 +11,8 @@ import Pux.DOM.HTML (HTML)
 import Pux.DOM.History as PH
 import Pux.Renderer.React (renderToReact)
 import React (ReactClass)
-import Share.Event (Event(..), foldp)
+import Share.Event (Event(..))
+import Share.EventHandler (foldp)
 import Share.Route (route)
 import Share.State as State
 import Share.View.ClientRoot as ClientRoot

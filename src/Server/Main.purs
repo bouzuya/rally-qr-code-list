@@ -17,7 +17,7 @@ import Effect.Class.Console (log)
 import Prelude (Unit, bind, pure, show, (<<<), (<>))
 import Pux as Pux
 import Pux.Renderer.React (renderToStaticMarkup)
-import Share.Event (foldp)
+import Share.EventHandler (foldp)
 import Share.State as State
 import Share.View.ServerRoot as ServerRoot
 
