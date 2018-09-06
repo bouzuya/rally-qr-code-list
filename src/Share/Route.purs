@@ -7,7 +7,7 @@ import Control.Monad.Except (except)
 import Data.Either (Either(..))
 import Data.List.NonEmpty as NonEmptyList
 import Foreign (F, ForeignError(..))
-import Prelude (bind)
+import Prelude (class Show, bind, (<>))
 import Share.Path (normalizePath, toPieces)
 import Simple.JSON (class ReadForeign, class WriteForeign, readImpl, writeImpl)
 
@@ -30,6 +30,11 @@ instance readForeignRoute :: ReadForeign Route where
         Right StampRallyList
       _ ->
         Left (NonEmptyList.singleton (ForeignError "Unknown Route"))
+
+instance showRoute :: Show Route where
+  show SignIn = "/" -- TODO
+  show (StampRallyDetail stampRallyId) = "/stamp_rallies/" <> stampRallyId
+  show StampRallyList = "/stamp_rallies"
 
 instance writeForeignRoute :: WriteForeign Route where
   writeImpl SignIn =

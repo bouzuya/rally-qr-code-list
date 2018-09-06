@@ -22,9 +22,10 @@ foldp (EmailChange event) state =
 foldp (GoTo route event) state =
   onlyEffects
     state
-    [ do
-        liftEffect (preventDefault event)
-        pure (Just (InternalEvent (RouteChange route)))
+    [
+      liftEffect do
+        preventDefault event
+        pure (Just (InternalEvent (RouteChange route (Just false))))
     ]
 foldp (InternalEvent event) state =
   mapEffects InternalEvent (InternalEventHandler.foldp event state)
@@ -34,7 +35,7 @@ foldp (SignIn event) state =
   onlyEffects
     state
     [ do
-        liftEffect $ preventDefault event
+        liftEffect (preventDefault event)
         tokenMaybe <- createToken { email: state.email, password: state.password }
         pure $ InternalEvent <$> SignInSuccess <$> tokenMaybe
     ]
@@ -44,6 +45,6 @@ foldp (SignOut event) state =
     [ do
         liftEffect (preventDefault event)
         liftEffect (Cookie.saveToken Nothing)
-        pure (Just (InternalEvent (RouteChange Route.SignIn)))
+        pure (Just (InternalEvent (RouteChange Route.SignIn (Just false))))
     ]
   }

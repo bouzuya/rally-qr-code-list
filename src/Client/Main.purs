@@ -2,7 +2,7 @@ module Client.Main
   (main) where
 
 import Data.List (List)
-import Data.Maybe (maybe)
+import Data.Maybe (Maybe(..), maybe)
 import Effect (Effect)
 import Effect.Exception (throw)
 import Prelude (Unit, bind, pure, (=<<))
@@ -34,7 +34,7 @@ hydrate selector markup input =
   hydrateImpl selector =<< renderToReact markup input
 
 match :: String -> Event
-match path = InternalEvent (RouteChange (route path))
+match path = InternalEvent (RouteChange (route path) Nothing)
 
 main :: Effect Unit
 main = do

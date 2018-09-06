@@ -6,7 +6,7 @@ import Data.Maybe (Maybe(..))
 import Data.Traversable (traverse)
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
-import Prelude (bind, discard, pure, ($), (<$>))
+import Prelude (bind, discard, pure, show, ($), (<$>))
 import Pux (EffModel, noEffects, onlyEffects)
 import Share.Cookie as Cookie
 import Share.Event.InternalEvent (InternalEvent(..))
@@ -14,6 +14,10 @@ import Share.QrCode as QrCode
 import Share.Request (Spot, getSpotList, getStampRallyList)
 import Share.Route as Route
 import Share.State (State)
+import Simple.JSON (undefined)
+import Web.HTML (window)
+import Web.HTML.History as History
+import Web.HTML.Window (history)
 
 foldp :: InternalEvent -> State -> EffModel State InternalEvent
 foldp (FetchSpotList stampRallyid) state =
@@ -59,16 +63,26 @@ foldp FetchStampRallyList state =
     ]
 foldp (FetchStampRallyListSuccess stampRallyList) state =
   noEffects $ state { stampRallyList = Just stampRallyList }
-foldp (RouteChange route) state =
+foldp (RouteChange route replaceMaybe) state =
   { state: state { route = route }
   , effects:
-    [ do
+    [
+      case replaceMaybe of
+        Nothing -> pure Nothing
+        Just _ -> liftEffect do
+          w <- window
+          h <- history w
+          History.pushState
+            undefined
+            (History.DocumentTitle "")
+            (History.URL (show route))
+            h
+          pure Nothing
+    , do
         case route of
           Route.SignIn -> do
             tokenMaybe <- liftEffect Cookie.loadToken
-            case tokenMaybe of
-              Nothing -> pure Nothing
-              Just token -> pure (Just (SignInSuccess token))
+            pure (SignInSuccess <$> tokenMaybe)
           Route.StampRallyDetail stampRallyId ->
             pure (Just (FetchSpotList stampRallyId))
           Route.StampRallyList ->
@@ -78,7 +92,7 @@ foldp (RouteChange route) state =
 foldp (SignInSuccess token) state =
   { state: state { token = Just token }
   , effects:
-    [ pure (Just (RouteChange Route.StampRallyList))
+    [ pure (Just (RouteChange Route.StampRallyList (Just true)))
     , do
         liftEffect (Cookie.saveToken (Just token))
         pure Nothing
