@@ -4,9 +4,11 @@ module Share.Event
 
 import Pux.DOM.Events (DOMEvent)
 import Share.Event.InternalEvent (InternalEvent)
+import Share.Route (Route)
 
 data Event
   = EmailChange DOMEvent
+  | GoTo Route DOMEvent
   | InternalEvent InternalEvent
   | PasswordChange DOMEvent
   | SignIn DOMEvent

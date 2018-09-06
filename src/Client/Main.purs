@@ -12,6 +12,7 @@ import Pux.DOM.History as PH
 import Pux.Renderer.React (renderToReact)
 import React (ReactClass)
 import Share.Event (Event(..))
+import Share.Event.InternalEvent (InternalEvent(..))
 import Share.EventHandler (foldp)
 import Share.Route (route)
 import Share.State as State
@@ -33,7 +34,7 @@ hydrate selector markup input =
   hydrateImpl selector =<< renderToReact markup input
 
 match :: String -> Event
-match path = RouteChange (route path)
+match path = InternalEvent (RouteChange (route path))
 
 main :: Effect Unit
 main = do

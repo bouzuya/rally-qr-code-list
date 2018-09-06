@@ -3,7 +3,7 @@ module Share.View.StampRallyListPage
 
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
-import Prelude (const, discard, ($))
+import Prelude (discard, ($))
 import Pux.DOM.Events as PE
 import Pux.DOM.HTML as P
 import Share.Event (Event(..))
@@ -25,7 +25,7 @@ view state = do
         Just stampRallyList ->
           H.ul $ do
             for_ stampRallyList \i -> do
-              H.li M.#! PE.onClick (const (RouteChange (Route.StampRallyDetail i.name))) $ do
+              H.li M.#! PE.onClick (GoTo (Route.StampRallyDetail i.name)) $ do
                 H.span M.! HA.className "image" $ do
                   case i.image of
                     Nothing -> M.text ""
