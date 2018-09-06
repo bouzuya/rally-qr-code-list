@@ -4,15 +4,15 @@ module Share.EventHandler
 
 import Data.Maybe (Maybe(..))
 import Data.Traversable (traverse)
-import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Prelude (bind, discard, pure, ($), (<$>))
-import Pux (EffModel, noEffects, onlyEffects)
+import Pux (EffModel, mapEffects, noEffects)
 import Pux.DOM.Events (targetValue)
 import Share.Cookie as Cookie
 import Share.Event (Event(..))
-import Share.QrCode as QrCode
-import Share.Request (Spot, createToken, getSpotList, getStampRallyList)
+import Share.Event.InternalEvent (InternalEvent(..))
+import Share.Event.InternalEventHandler as InternalEventHandler
+import Share.Request (createToken)
 import Share.Route as Route
 import Share.State (State)
 import Web.Event.Event (preventDefault)
@@ -20,83 +20,17 @@ import Web.Event.Event (preventDefault)
 foldp :: Event -> State -> EffModel State Event
 foldp (EmailChange event) state =
   noEffects $ state { email = targetValue event }
-foldp (FetchSpotList stampRallyid) state =
-  onlyEffects
-    state
-    [
-      do
-        case state.spotList of
-          Just _ -> pure Nothing
-          Nothing ->
-            case state.token of
-              Just token -> do
-                spotListMaybe <- getSpotList token stampRallyid
-                pure (FetchSpotListSuccess <$> spotListMaybe)
-              Nothing -> pure Nothing
-    ]
-foldp (FetchSpotListSuccess spotList) state =
-  { state: state { spotList = Just spotList }
-  , effects: [
-      do
-        let
-          generateQrCode :: Spot -> Aff { dataUrl :: String, spotId :: Int }
-          generateQrCode spot = do
-            dataUrl <- QrCode.toDataUrl QrCode.M spot.shortenUrl
-            pure { dataUrl: dataUrl, spotId: spot.id }
-        qrCodeList <- traverse generateQrCode spotList
-        pure (Just (UpdateQrCodeList qrCodeList))
-    ]
-  }
-foldp FetchStampRallyList state =
-  onlyEffects
-    state
-    [
-      do
-        case state.stampRallyList of
-          Just _ -> pure Nothing
-          Nothing ->
-            case state.token of
-              Just token -> do
-                stampRallyListMaybe <- getStampRallyList token
-                pure (FetchStampRallyListSuccess <$> stampRallyListMaybe)
-              Nothing -> pure Nothing
-    ]
-foldp (FetchStampRallyListSuccess stampRallyList) state =
-  noEffects $ state { stampRallyList = Just stampRallyList }
+foldp (InternalEvent event) state =
+  mapEffects InternalEvent (InternalEventHandler.foldp event state)
 foldp (PasswordChange event) state =
   noEffects $ state { password = targetValue event }
-foldp (RouteChange route) state =
-  { state: state { route = route }
-  , effects:
-    [ do
-        case route of
-          Route.SignIn -> do
-            tokenMaybe <- liftEffect Cookie.loadToken
-            case tokenMaybe of
-              Nothing -> pure Nothing
-              Just token -> pure (Just (SignInSuccess token))
-          Route.StampRallyDetail stampRallyId ->
-            pure (Just (FetchSpotList stampRallyId))
-          Route.StampRallyList ->
-            pure (Just FetchStampRallyList)
-    ]
-  }
 foldp (SignIn event) state =
   { state
   , effects:
     [ do
         liftEffect $ preventDefault event
         tokenMaybe <- createToken { email: state.email, password: state.password }
-        pure $ SignInSuccess <$> tokenMaybe
-    ]
-  }
-foldp (SignInSuccess token) state =
-  { state: state { token = Just token }
-  , effects:
-    [ pure (Just (RouteChange Route.StampRallyList))
-    , do
-        liftEffect (Cookie.saveToken (Just token))
-        pure Nothing
+        pure $ InternalEvent <$> SignInSuccess <$> tokenMaybe
     ]
   }
 foldp (SignOut event) state =
@@ -105,9 +39,6 @@ foldp (SignOut event) state =
     [ do
         liftEffect (preventDefault event)
         liftEffect (Cookie.saveToken Nothing)
-        pure (Just (RouteChange Route.SignIn))
+        pure (Just (InternalEvent (RouteChange Route.SignIn)))
     ]
   }
-
-foldp (UpdateQrCodeList qrCodeList) state =
-  noEffects $ state { qrCodeList = qrCodeList }
