@@ -87,7 +87,7 @@ foldp (RouteChange route) state =
             tokenMaybe <- liftEffect Cookie.loadToken
             case tokenMaybe of
               Nothing -> pure Nothing
-              Just token -> pure (Just (SignInSuccess token)) -- TODO: expires
+              Just token -> pure (Just (SignInSuccess token))
           Route.StampRallyDetail stampRallyId ->
             pure (Just (FetchSpotList stampRallyId))
           Route.StampRallyList ->
