@@ -7,6 +7,7 @@ import Pux.DOM.HTML.Attributes as PA
 import Share.Event (Event)
 import Share.State (State)
 import Share.State as State
+import Share.Style as Style
 import Share.View.ClientRoot as ClientRoot
 import Text.Smolder.HTML as H
 import Text.Smolder.HTML.Attributes as HA
@@ -19,6 +20,7 @@ view state = do
       H.meta M.! HA.charset "UTF-8"
       H.title $ do
         M.text "RALLY QR code list"
+      P.style Style.style
     H.body $ do
       H.div M.! HA.className "root" $ do
         ClientRoot.view state
