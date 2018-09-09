@@ -20,6 +20,7 @@ type State =
   , password :: String
   , qrCodeList :: Array { spotId :: Int, dataUrl :: String }
   , route :: Route
+  , selected :: String -- qr or url
   , spotList :: Maybe (Array Spot)
   , stampRallyList :: Maybe (Array StampRally)
   , token :: Maybe Token
@@ -37,6 +38,7 @@ init =
   , password: ""
   , qrCodeList: []
   , route: SignIn
+  , selected: "qr"
   , spotList: Nothing
   , stampRallyList: Nothing
   , token: Nothing

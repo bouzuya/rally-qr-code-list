@@ -31,6 +31,8 @@ foldp (InternalEvent event) state =
   mapEffects InternalEvent (InternalEventHandler.foldp event state)
 foldp (PasswordChange event) state =
   noEffects $ state { password = targetValue event }
+foldp (QrCodeSelect event) state =
+  noEffects $ state { selected = "qr" }
 foldp (SignIn event) state =
   onlyEffects
     state
@@ -48,3 +50,5 @@ foldp (SignOut event) state =
         pure (Just (InternalEvent (RouteChange Route.SignIn (Just false))))
     ]
   }
+foldp (UrlSelect event) state =
+  noEffects $ state { selected = "url" }
