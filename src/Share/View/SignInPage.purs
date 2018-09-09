@@ -17,6 +17,6 @@ view state = do
       H.h1 $ do
         M.text "Sign In"
     H.div M.! HA.className "body" $ do
-      SignInForm.view state
+      SignInForm.view { email: state.email, password: state.password }
     H.footer do
       M.text ""
