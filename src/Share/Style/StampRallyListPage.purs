@@ -2,7 +2,7 @@ module Share.Style.StampRallyListPage
   ( style
   ) where
 
-import CSS (CSS, Selector, Size(..), absolute, block, display, displayNone, fontSize, footer, fromString, header, height, img, key, left, li, padding, pct, position, px, relative, top, ul, width)
+import CSS (CSS, Selector, Size, absolute, block, display, displayNone, fontSize, footer, fromString, header, height, img, left, li, padding, pct, position, px, relative, top, ul, width)
 import CSS.ListStyle.Type (listStyleType)
 import CSS.ListStyle.Type as ListStyleType
 import Prelude (discard, (#))
