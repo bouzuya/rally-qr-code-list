@@ -64,7 +64,19 @@ foldp FetchStampRallyList state =
 foldp (FetchStampRallyListSuccess stampRallyList) state =
   noEffects $ state { stampRallyList = Just stampRallyList }
 foldp (RouteChange route replaceMaybe) state =
-  { state: state { route = route }
+  { state:
+      state
+        { qrCodeList = case route of
+            Route.StampRallyDetail _ -> []
+            _ -> state.qrCodeList
+        , route = route
+        , spotList = case route of
+            Route.StampRallyDetail _ -> Nothing
+            _ -> state.spotList
+        , stampRallyList = case route of
+            Route.StampRallyList -> Nothing
+            _ -> state.stampRallyList
+        }
   , effects:
     [
       case replaceMaybe of
