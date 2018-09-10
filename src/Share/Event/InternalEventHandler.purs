@@ -81,7 +81,7 @@ foldp (RouteChange route replaceMaybe) state =
     , do
         case route of
           Route.Index -> do
-            pure Nothing -- TODO
+            pure (Just (RouteChange Route.SignIn (Just false)))
           Route.SignIn -> do
             tokenMaybe <- liftEffect Cookie.loadToken
             pure (SignInSuccess <$> tokenMaybe)
