@@ -35,8 +35,8 @@ instance readForeignRoute :: ReadForeign Route where
         Left (NonEmptyList.singleton (ForeignError "Unknown Route"))
 
 instance showRoute :: Show Route where
-  show Index = "/" -- TODO
-  show SignIn = "/sign_in" -- TODO
+  show Index = "/"
+  show SignIn = "/sign_in"
   show (StampRallyDetail stampRallyId) = "/stamp_rallies/" <> stampRallyId
   show StampRallyList = "/stamp_rallies"
 

@@ -37,7 +37,7 @@ init =
   , email: ""
   , password: ""
   , qrCodeList: []
-  , route: SignIn
+  , route: Index
   , selected: "qr"
   , spotList: Nothing
   , stampRallyList: Nothing
