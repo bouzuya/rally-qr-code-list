@@ -12,7 +12,8 @@ import Share.Path (normalizePath, toPieces)
 import Simple.JSON (class ReadForeign, class WriteForeign, readImpl, writeImpl)
 
 data Route
-  = SignIn
+  = Index
+  | SignIn
   | StampRallyDetail String
   | StampRallyList
 
@@ -22,6 +23,8 @@ instance readForeignRoute :: ReadForeign Route where
   readImpl f = do
     o <- readImpl f :: F RouteRecord
     except case o of
+      { name: "Index" } ->
+        Right Index
       { name: "SignIn" } ->
         Right SignIn
       { name: "StampRallyDetail", params: [stampRallyId] } ->
@@ -32,11 +35,14 @@ instance readForeignRoute :: ReadForeign Route where
         Left (NonEmptyList.singleton (ForeignError "Unknown Route"))
 
 instance showRoute :: Show Route where
-  show SignIn = "/" -- TODO
+  show Index = "/" -- TODO
+  show SignIn = "/sign_in" -- TODO
   show (StampRallyDetail stampRallyId) = "/stamp_rallies/" <> stampRallyId
   show StampRallyList = "/stamp_rallies"
 
 instance writeForeignRoute :: WriteForeign Route where
+  writeImpl Index =
+    writeImpl ({ name: "Index", params: [] } :: RouteRecord)
   writeImpl SignIn =
     writeImpl ({ name: "SignIn", params: [] } :: RouteRecord)
   writeImpl (StampRallyDetail stampRallyId) =
@@ -50,7 +56,8 @@ route path =
     normalized = normalizePath path
   in
     case toPieces normalized of
-      [] -> SignIn
+      [] -> Index
+      ["sign_in"] -> SignIn
       ["stamp_rallies"] -> StampRallyList
       ["stamp_rallies", stampRallyId] -> StampRallyDetail stampRallyId
-      _ -> SignIn -- default
+      _ -> Index -- default

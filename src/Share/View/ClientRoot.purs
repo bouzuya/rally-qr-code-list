@@ -30,6 +30,8 @@ view state = do
               M.text "Sign Out"
     H.div M.! HA.className "body" $ do
       case state.route of
+        Route.Index ->
+          SignInPage.view state -- TODO
         Route.SignIn ->
           SignInPage.view state
         Route.StampRallyDetail stampRallyId ->
