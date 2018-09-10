@@ -8,6 +8,7 @@ import Pux.DOM.HTML as P
 import Share.Event (Event(..))
 import Share.Route as Route
 import Share.State (State)
+import Share.View.IndexPage as IndexPage
 import Share.View.SignInPage as SignInPage
 import Share.View.StampRallyDetailPage as StampRallyDetailPage
 import Share.View.StampRallyListPage as StampRallyListPage
@@ -31,7 +32,7 @@ view state = do
     H.div M.! HA.className "body" $ do
       case state.route of
         Route.Index ->
-          SignInPage.view state -- TODO
+          IndexPage.view state
         Route.SignIn ->
           SignInPage.view state
         Route.StampRallyDetail stampRallyId ->
