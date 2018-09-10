@@ -25,12 +25,14 @@ foldp (FetchSpotList stampRallyid) state =
     state
     [
       do
-        -- TODO: spotList cache
-        case state.token of
-          Just token -> do
-            spotListMaybe <- getSpotList token stampRallyid
-            pure (FetchSpotListSuccess <$> spotListMaybe)
-          Nothing -> pure Nothing
+        case state.spotList of
+          Just _ -> pure Nothing
+          Nothing ->
+            case state.token of
+              Just token -> do
+                spotListMaybe <- getSpotList token stampRallyid
+                pure (FetchSpotListSuccess <$> spotListMaybe)
+              Nothing -> pure Nothing
     ]
 foldp (FetchSpotListSuccess spotList) state =
   { state: state { spotList = Just spotList }
@@ -50,12 +52,14 @@ foldp FetchStampRallyList state =
     state
     [
       do
-        -- TODO: stampRallyList cache
-        case state.token of
-          Just token -> do
-            stampRallyListMaybe <- getStampRallyList token
-            pure (FetchStampRallyListSuccess <$> stampRallyListMaybe)
-          Nothing -> pure Nothing
+        case state.stampRallyList of
+          Just _ -> pure Nothing
+          Nothing ->
+            case state.token of
+              Just token -> do
+                stampRallyListMaybe <- getStampRallyList token
+                pure (FetchStampRallyListSuccess <$> stampRallyListMaybe)
+              Nothing -> pure Nothing
     ]
 foldp (FetchStampRallyListSuccess stampRallyList) state =
   noEffects $ state { stampRallyList = Just stampRallyList }
