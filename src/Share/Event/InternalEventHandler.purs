@@ -37,15 +37,7 @@ foldp (FetchSpotList stampRallyid) state =
     ]
 foldp (FetchSpotListSuccess spotList) state =
   { state: state { spotList = Just spotList }
-  , effects: [
-      do
-        let
-          generateQrCode :: ErrorCorrectionLevel -> Spot -> Aff { dataUrl :: String, spotId :: Int }
-          generateQrCode level spot = do
-            dataUrl <- QrCode.toDataUrl level spot.shortenUrl
-            pure { dataUrl: dataUrl, spotId: spot.id }
-        qrCodeList <- traverse (generateQrCode state.errorCorrectionLevel) spotList
-        pure (Just (UpdateQrCodeList qrCodeList))
+  , effects: [ pure (Just GenerateQrCodeList)
     ]
   }
 foldp FetchStampRallyList state =
@@ -64,6 +56,22 @@ foldp FetchStampRallyList state =
     ]
 foldp (FetchStampRallyListSuccess stampRallyList) state =
   noEffects $ state { stampRallyList = Just stampRallyList }
+foldp GenerateQrCodeList state =
+  onlyEffects
+    state
+    [
+      do
+        let
+          generateQrCode :: ErrorCorrectionLevel -> Spot -> Aff { dataUrl :: String, spotId :: Int }
+          generateQrCode level spot = do
+            dataUrl <- QrCode.toDataUrl level spot.shortenUrl
+            pure { dataUrl: dataUrl, spotId: spot.id }
+        case state.spotList of
+          Nothing -> pure (Just (UpdateQrCodeList []))
+          Just spotList -> do
+            qrCodeList <- traverse (generateQrCode state.errorCorrectionLevel) spotList
+            pure (Just (UpdateQrCodeList qrCodeList))
+    ]
 foldp (RouteChange route replaceMaybe) state =
   { state:
       state

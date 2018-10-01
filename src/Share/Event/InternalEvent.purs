@@ -11,6 +11,7 @@ data InternalEvent
   | FetchSpotListSuccess (Array Spot)
   | FetchStampRallyList
   | FetchStampRallyListSuccess (Array StampRally)
+  | GenerateQrCodeList
   | RouteChange Route.Route (Maybe Boolean)
   | SignInSuccess Token
   | UpdateQrCodeList (Array { dataUrl :: String, spotId :: Int })

@@ -21,13 +21,29 @@ foldp :: Event -> State -> EffModel State Event
 foldp (EmailChange event) state =
   noEffects $ state { email = targetValue event }
 foldp (ErrorCorrectionLevelLSelect event) state =
-  noEffects $ state { errorCorrectionLevel = ErrorCorrectionLevel.L }
+  { effects:
+    [ pure (Just (InternalEvent GenerateQrCodeList))
+    ]
+  , state: state { errorCorrectionLevel = ErrorCorrectionLevel.L }
+  }
 foldp (ErrorCorrectionLevelMSelect event) state =
-  noEffects $ state { errorCorrectionLevel = ErrorCorrectionLevel.M }
+  { effects:
+    [ pure (Just (InternalEvent GenerateQrCodeList))
+    ]
+  , state: state { errorCorrectionLevel = ErrorCorrectionLevel.M }
+  }
 foldp (ErrorCorrectionLevelQSelect event) state =
-  noEffects $ state { errorCorrectionLevel = ErrorCorrectionLevel.Q }
+  { effects:
+    [ pure (Just (InternalEvent GenerateQrCodeList))
+    ]
+  , state: state { errorCorrectionLevel = ErrorCorrectionLevel.Q }
+  }
 foldp (ErrorCorrectionLevelHSelect event) state =
-  noEffects $ state { errorCorrectionLevel = ErrorCorrectionLevel.H }
+  { effects:
+    [ pure (Just (InternalEvent GenerateQrCodeList))
+    ]
+  , state: state { errorCorrectionLevel = ErrorCorrectionLevel.H }
+  }
 foldp (GoTo route event) state =
   onlyEffects
     state
