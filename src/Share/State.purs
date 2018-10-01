@@ -8,8 +8,8 @@ module Share.State
 import Data.Either (either)
 import Data.Maybe (Maybe(..))
 import Prelude (const)
-import Share.QrCode (ErrorCorrectionLevel)
-import Share.QrCode as ErrorCorrectionLevel
+import Share.QrCode.ErrorCorrectionLevel (ErrorCorrectionLevel)
+import Share.QrCode.ErrorCorrectionLevel as ErrorCorrectionLevel
 import Share.Request (Spot, StampRally, Token)
 import Share.Route (Route(..))
 import Simple.JSON (readJSON, writeJSON)

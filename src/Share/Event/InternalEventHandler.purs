@@ -10,6 +10,7 @@ import Prelude (bind, discard, pure, show, ($), (<$>))
 import Pux (EffModel, noEffects, onlyEffects)
 import Share.Cookie as Cookie
 import Share.Event.InternalEvent (InternalEvent(..))
+import Share.QrCode.ErrorCorrectionLevel as ErrorCorrectionLevel
 import Share.QrCode as QrCode
 import Share.Request (Spot, getSpotList, getStampRallyList)
 import Share.Route as Route
@@ -41,7 +42,7 @@ foldp (FetchSpotListSuccess spotList) state =
         let
           generateQrCode :: Spot -> Aff { dataUrl :: String, spotId :: Int }
           generateQrCode spot = do
-            dataUrl <- QrCode.toDataUrl QrCode.M spot.shortenUrl
+            dataUrl <- QrCode.toDataUrl ErrorCorrectionLevel.M spot.shortenUrl
             pure { dataUrl: dataUrl, spotId: spot.id }
         qrCodeList <- traverse generateQrCode spotList
         pure (Just (UpdateQrCodeList qrCodeList))
