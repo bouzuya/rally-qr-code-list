@@ -8,6 +8,10 @@ import Share.Route (Route)
 
 data Event
   = EmailChange DOMEvent
+  | ErrorCorrectionLevelLSelect DOMEvent
+  | ErrorCorrectionLevelMSelect DOMEvent
+  | ErrorCorrectionLevelQSelect DOMEvent
+  | ErrorCorrectionLevelHSelect DOMEvent
   | GoTo Route DOMEvent
   | InternalEvent InternalEvent
   | PasswordChange DOMEvent

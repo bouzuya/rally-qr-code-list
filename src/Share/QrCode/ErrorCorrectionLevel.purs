@@ -7,7 +7,7 @@ import Control.Monad.Except (except)
 import Data.Either (Either(..))
 import Data.List.NonEmpty as NonEmptyList
 import Foreign (F, ForeignError(..))
-import Prelude (bind)
+import Prelude (class Eq, bind, (==))
 import Simple.JSON (class ReadForeign, class WriteForeign, readImpl, writeImpl)
 
 data ErrorCorrectionLevel
@@ -15,6 +15,9 @@ data ErrorCorrectionLevel
   | M
   | Q
   | H
+
+instance eqErrorCorrectionLevel :: Eq ErrorCorrectionLevel where
+  eq a b = toString a == toString b
 
 instance readForeignErrorCorrectionLevel :: ReadForeign ErrorCorrectionLevel where
   readImpl f = do

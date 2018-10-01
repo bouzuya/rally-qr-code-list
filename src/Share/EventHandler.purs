@@ -11,6 +11,7 @@ import Share.Cookie as Cookie
 import Share.Event (Event(..))
 import Share.Event.InternalEvent (InternalEvent(..))
 import Share.Event.InternalEventHandler as InternalEventHandler
+import Share.QrCode.ErrorCorrectionLevel as ErrorCorrectionLevel
 import Share.Request (createToken)
 import Share.Route as Route
 import Share.State (State)
@@ -19,6 +20,14 @@ import Web.Event.Event (preventDefault)
 foldp :: Event -> State -> EffModel State Event
 foldp (EmailChange event) state =
   noEffects $ state { email = targetValue event }
+foldp (ErrorCorrectionLevelLSelect event) state =
+  noEffects $ state { errorCorrectionLevel = ErrorCorrectionLevel.L }
+foldp (ErrorCorrectionLevelMSelect event) state =
+  noEffects $ state { errorCorrectionLevel = ErrorCorrectionLevel.M }
+foldp (ErrorCorrectionLevelQSelect event) state =
+  noEffects $ state { errorCorrectionLevel = ErrorCorrectionLevel.Q }
+foldp (ErrorCorrectionLevelHSelect event) state =
+  noEffects $ state { errorCorrectionLevel = ErrorCorrectionLevel.H }
 foldp (GoTo route event) state =
   onlyEffects
     state

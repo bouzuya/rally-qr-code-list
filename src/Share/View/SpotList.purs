@@ -7,6 +7,8 @@ import Prelude (discard, ($), (<>), (==))
 import Pux.DOM.Events as PE
 import Pux.DOM.HTML as P
 import Share.Event (Event(..))
+import Share.QrCode.ErrorCorrectionLevel (ErrorCorrectionLevel)
+import Share.QrCode.ErrorCorrectionLevel as ErrorCorrectionLevel
 import Share.Request (Spot)
 import Text.Smolder.HTML as H
 import Text.Smolder.HTML.Attributes as HA
@@ -27,16 +29,22 @@ labeledInput' type' name label value checked onChange = do
 
 view
   ::
-    { qrCodeList :: Array { spotId :: Int, dataUrl :: String }
+    { errorCorrectionLevel :: ErrorCorrectionLevel
+    , qrCodeList :: Array { spotId :: Int, dataUrl :: String }
     , selected :: String
     , spotList :: Array Spot
     }
   -> P.HTML Event
-view { qrCodeList, selected, spotList } = do
+view { errorCorrectionLevel, qrCodeList, selected, spotList } = do
   H.div M.! HA.className "spot-list" $ do
     H.div M.! HA.className "selector" $ do
       labeledInput' "radio" "url-or-qr-code" "URL" "url" (selected == "url") UrlSelect
       labeledInput' "radio" "url-or-qr-code" "QR code" "qr" (selected == "qr")  QrCodeSelect
+    H.div M.! HA.className "error-correction-level-selector" $ do
+      labeledInput' "radio" "error-correction-level" "L (7%)" "L" (errorCorrectionLevel == ErrorCorrectionLevel.L) ErrorCorrectionLevelLSelect
+      labeledInput' "radio" "error-correction-level" "M (15%)" "M" (errorCorrectionLevel == ErrorCorrectionLevel.M) ErrorCorrectionLevelMSelect
+      labeledInput' "radio" "error-correction-level" "Q (25%)" "Q" (errorCorrectionLevel == ErrorCorrectionLevel.Q) ErrorCorrectionLevelQSelect
+      labeledInput' "radio" "error-correction-level" "H (30%)" "H" (errorCorrectionLevel == ErrorCorrectionLevel.H) ErrorCorrectionLevelHSelect
     H.ul M.! HA.className ("is-selected-" <> selected) $ do
       for_ spotList \i -> do
         H.li $ do

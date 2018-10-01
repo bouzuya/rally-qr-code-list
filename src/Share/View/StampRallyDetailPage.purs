@@ -23,6 +23,6 @@ view state stampRallyId = do
       case state.spotList of
         Nothing -> M.text "loading..."
         Just spotList ->
-          SpotList.view { qrCodeList: state.qrCodeList, selected: state.selected, spotList }
+          SpotList.view { errorCorrectionLevel: state.errorCorrectionLevel, qrCodeList: state.qrCodeList, selected: state.selected, spotList }
     H.footer do
       M.text ""
