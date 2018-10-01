@@ -8,6 +8,8 @@ module Share.State
 import Data.Either (either)
 import Data.Maybe (Maybe(..))
 import Prelude (const)
+import Share.QrCode (ErrorCorrectionLevel)
+import Share.QrCode as ErrorCorrectionLevel
 import Share.Request (Spot, StampRally, Token)
 import Share.Route (Route(..))
 import Simple.JSON (readJSON, writeJSON)
@@ -17,6 +19,7 @@ type State =
     { assetsBaseUrl :: String
     }
   , email :: String
+  , errorCorrectionLevel :: ErrorCorrectionLevel
   , password :: String
   , qrCodeList :: Array { spotId :: Int, dataUrl :: String }
   , route :: Route
@@ -35,6 +38,7 @@ init =
     { assetsBaseUrl: "http://localhost:8081" -- TODO: production
     }
   , email: ""
+  , errorCorrectionLevel: ErrorCorrectionLevel.M
   , password: ""
   , qrCodeList: []
   , route: Index
