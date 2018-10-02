@@ -21,7 +21,8 @@ view state = do
   H.div M.! HA.className "client-root" $ do
     H.header $ do
       H.h1 $ do
-        M.text "RALLY QR code list"
+        H.a M.! HA.href "/" M.#! PE.onClick (GoTo Route.Index) $ do
+          M.text "RALLY QR code list"
       H.div $ do
         case state.token of
           Nothing ->
