@@ -4,7 +4,7 @@ module Share.EventHandler
 
 import Data.Maybe (Maybe(..))
 import Effect.Class (liftEffect)
-import Prelude (bind, discard, pure, ($), (<$>))
+import Prelude (bind, discard, pure, ($), (<$>), (<*>))
 import Pux (EffModel, mapEffects, noEffects, onlyEffects)
 import Pux.DOM.Events (targetValue)
 import Share.Cookie as Cookie
@@ -12,7 +12,7 @@ import Share.Event (Event(..))
 import Share.Event.InternalEvent (InternalEvent(..))
 import Share.Event.InternalEventHandler as InternalEventHandler
 import Share.QrCode.ErrorCorrectionLevel as ErrorCorrectionLevel
-import Share.Request (createToken)
+import Share.Request as Request
 import Share.Route as Route
 import Share.State (State)
 import Web.Event.Event (preventDefault)
@@ -63,8 +63,8 @@ foldp (SignIn event) state =
     state
     [ do
         liftEffect (preventDefault event)
-        tokenMaybe <- createToken { email: state.email, password: state.password }
-        pure $ InternalEvent <$> SignInSuccess <$> tokenMaybe
+        tokenMaybe <- Request.createToken { email: state.email, password: state.password }
+        pure $ InternalEvent <$> (SignInSuccess <$> tokenMaybe <*> Just (Just Route.StampRallyList))
     ]
 foldp (SignOut event) state =
   { state: state { token = Nothing }
@@ -72,7 +72,7 @@ foldp (SignOut event) state =
     [ do
         liftEffect (preventDefault event)
         liftEffect (Cookie.saveToken Nothing)
-        pure (Just (InternalEvent (RouteChange Route.SignIn (Just false))))
+        pure (Just (InternalEvent (RouteChange (Route.SignIn Nothing) (Just false))))
     ]
   }
 foldp (UrlSelect event) state =

@@ -6,6 +6,7 @@ module Share.Route
 import Control.Monad.Except (except)
 import Data.Either (Either(..))
 import Data.List.NonEmpty as NonEmptyList
+import Data.Maybe (Maybe(..))
 import Foreign (F, ForeignError(..))
 import Prelude (class Show, bind, (<>))
 import Share.Path (normalizePath, toPieces)
@@ -13,7 +14,7 @@ import Simple.JSON (class ReadForeign, class WriteForeign, readImpl, writeImpl)
 
 data Route
   = Index
-  | SignIn
+  | SignIn (Maybe Route)
   | StampRallyDetail String
   | StampRallyList
 
@@ -26,7 +27,7 @@ instance readForeignRoute :: ReadForeign Route where
       { name: "Index" } ->
         Right Index
       { name: "SignIn" } ->
-        Right SignIn
+        Right (SignIn Nothing)
       { name: "StampRallyDetail", params: [stampRallyId] } ->
         Right (StampRallyDetail stampRallyId)
       { name: "StampRallyList" } ->
@@ -36,14 +37,14 @@ instance readForeignRoute :: ReadForeign Route where
 
 instance showRoute :: Show Route where
   show Index = "/"
-  show SignIn = "/sign_in"
+  show (SignIn _) = "/sign_in"
   show (StampRallyDetail stampRallyId) = "/stamp_rallies/" <> stampRallyId
   show StampRallyList = "/stamp_rallies"
 
 instance writeForeignRoute :: WriteForeign Route where
   writeImpl Index =
     writeImpl ({ name: "Index", params: [] } :: RouteRecord)
-  writeImpl SignIn =
+  writeImpl (SignIn _) =
     writeImpl ({ name: "SignIn", params: [] } :: RouteRecord)
   writeImpl (StampRallyDetail stampRallyId) =
     writeImpl { name: "StampRallyDetail", params: [stampRallyId] }
@@ -57,7 +58,7 @@ route path =
   in
     case toPieces normalized of
       [] -> Index
-      ["sign_in"] -> SignIn
+      ["sign_in"] -> SignIn Nothing
       ["stamp_rallies"] -> StampRallyList
       ["stamp_rallies", stampRallyId] -> StampRallyDetail stampRallyId
       _ -> Index -- default

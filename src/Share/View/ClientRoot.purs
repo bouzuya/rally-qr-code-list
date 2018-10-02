@@ -33,7 +33,7 @@ view state = do
       case state.route of
         Route.Index ->
           IndexPage.view state
-        Route.SignIn ->
+        Route.SignIn _ ->
           SignInPage.view state
         Route.StampRallyDetail stampRallyId ->
           StampRallyDetailPage.view state stampRallyId

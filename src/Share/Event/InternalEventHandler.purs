@@ -6,7 +6,7 @@ import Data.Maybe (Maybe(..))
 import Data.Traversable (traverse)
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
-import Prelude (bind, discard, pure, show, ($), (<$>))
+import Prelude (bind, discard, pure, show, ($), (<$>), (<*>))
 import Pux (EffModel, noEffects, onlyEffects)
 import Share.Cookie as Cookie
 import Share.Event.InternalEvent (InternalEvent(..))
@@ -21,7 +21,7 @@ import Web.HTML.History as History
 import Web.HTML.Window (history)
 
 foldp :: InternalEvent -> State -> EffModel State InternalEvent
-foldp (FetchSpotList stampRallyid) state =
+foldp (FetchSpotList stampRallyId) state =
   onlyEffects
     state
     [
@@ -31,9 +31,10 @@ foldp (FetchSpotList stampRallyid) state =
           Nothing ->
             case state.token of
               Just token -> do
-                spotListMaybe <- getSpotList token stampRallyid
+                spotListMaybe <- getSpotList token stampRallyId
                 pure (FetchSpotListSuccess <$> spotListMaybe)
-              Nothing -> pure Nothing
+              Nothing ->
+                pure (Just (RouteChange (Route.SignIn (Just (Route.StampRallyDetail stampRallyId))) (Just false)))
     ]
 foldp (FetchSpotListSuccess spotList) state =
   { state: state { spotList = Just spotList }
@@ -52,7 +53,8 @@ foldp FetchStampRallyList state =
               Just token -> do
                 stampRallyListMaybe <- getStampRallyList token
                 pure (FetchStampRallyListSuccess <$> stampRallyListMaybe)
-              Nothing -> pure Nothing
+              Nothing ->
+                pure (Just (RouteChange (Route.SignIn (Just Route.StampRallyList)) (Just false)))
     ]
 foldp (FetchStampRallyListSuccess stampRallyList) state =
   noEffects $ state { stampRallyList = Just stampRallyList }
@@ -87,8 +89,7 @@ foldp (RouteChange route replaceMaybe) state =
             _ -> state.stampRallyList
         }
   , effects:
-    [
-      case replaceMaybe of
+    [ case replaceMaybe of
         Nothing -> pure Nothing
         Just _ -> liftEffect do
           w <- window
@@ -102,23 +103,24 @@ foldp (RouteChange route replaceMaybe) state =
     , do
         case route of
           Route.Index -> do
-            pure (Just (RouteChange Route.SignIn (Just false)))
-          Route.SignIn -> do
+            pure (Just (RouteChange (Route.SignIn (Just Route.StampRallyList)) (Just false)))
+          Route.SignIn redirectTo -> do
             tokenMaybe <- liftEffect Cookie.loadToken
-            pure (SignInSuccess <$> tokenMaybe)
+            pure (SignInSuccess <$> tokenMaybe <*> Just redirectTo)
           Route.StampRallyDetail stampRallyId ->
             pure (Just (FetchSpotList stampRallyId))
           Route.StampRallyList ->
             pure (Just FetchStampRallyList)
     ]
   }
-foldp (SignInSuccess token) state =
+foldp (SignInSuccess token redirectTo) state =
   { state: state { token = Just token }
   , effects:
-    [ pure (Just (RouteChange Route.StampRallyList (Just true)))
-    , do
+    [ do
         liftEffect (Cookie.saveToken (Just token))
-        pure Nothing
+        case redirectTo of
+          Nothing -> pure Nothing
+          Just to -> pure (Just (RouteChange to (Just true)))
     ]
   }
 foldp (UpdateQrCodeList qrCodeList) state =
