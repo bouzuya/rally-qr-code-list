@@ -18,6 +18,7 @@ import Prelude (Unit, bind, pure, show, (<<<), (<>))
 import Pux as Pux
 import Pux.Renderer.React (renderToStaticMarkup)
 import Share.EventHandler (foldp)
+import Share.Route (route)
 import Share.State as State
 import Share.View.ServerRoot as ServerRoot
 
@@ -36,10 +37,11 @@ handleListen options =
   log ("listen http://" <> options.hostname <> ":" <> show options.port)
 
 handleRequest :: Request -> Aff Response
-handleRequest _ = do
+handleRequest request = do
   let
+    currentRoute = route request.pathname
     puxConfig =
-      { initialState: State.init -- TODO: routing
+      { initialState: State.init currentRoute
       , view: ServerRoot.view
       , foldp
       , inputs: []

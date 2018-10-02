@@ -11,7 +11,7 @@ import Prelude (const)
 import Share.QrCode.ErrorCorrectionLevel (ErrorCorrectionLevel)
 import Share.QrCode.ErrorCorrectionLevel as ErrorCorrectionLevel
 import Share.Request (Spot, StampRally, Token)
-import Share.Route (Route(..))
+import Share.Route (Route)
 import Simple.JSON (readJSON, writeJSON)
 
 type State =
@@ -32,8 +32,8 @@ type State =
 deserialize :: String -> Maybe State
 deserialize s = either (const Nothing) Just (readJSON s)
 
-init :: State
-init =
+init :: Route -> State
+init route =
   { config:
     { assetsBaseUrl: "http://localhost:8081" -- TODO: production
     }
@@ -41,7 +41,7 @@ init =
   , errorCorrectionLevel: ErrorCorrectionLevel.M
   , password: ""
   , qrCodeList: []
-  , route: Index
+  , route
   , selected: "qr"
   , spotList: Nothing
   , stampRallyList: Nothing
