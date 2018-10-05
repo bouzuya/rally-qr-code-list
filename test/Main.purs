@@ -16,11 +16,13 @@ import Share.QrCode as QrCode
 import Share.QrCode.ErrorCorrectionLevel as ErrorCorrectionLevel
 import Share.Request.Rally as Rally
 import Test.MimeType as MimeType
+import Test.MimeTypeMap as MimeTypeMap
 import Test.Unit.Main (runTest)
 
 main :: Effect Unit
 main = runTest do
   MimeType.tests
+  MimeTypeMap.tests
 
 showQrCodeDataUrl :: String -> Effect Unit
 showQrCodeDataUrl text = launchAff_ do
