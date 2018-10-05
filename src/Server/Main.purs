@@ -9,6 +9,7 @@ import Data.ArrayBuffer.ArrayBuffer as ArrayBuffer
 import Data.ArrayBuffer.DataView as DataView
 import Data.ArrayBuffer.Typed as TypedArray
 import Data.ArrayBuffer.Types (Uint8Array)
+import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Aff (Aff)
@@ -17,6 +18,7 @@ import Effect.Class.Console (log)
 import Prelude (Unit, bind, pure, show, (<<<), (<>))
 import Pux as Pux
 import Pux.Renderer.React (renderToStaticMarkup)
+import Server.StaticRoute (staticRoute)
 import Share.EventHandler (foldp)
 import Share.Route (route)
 import Share.State as State
@@ -38,25 +40,36 @@ handleListen options =
 
 handleRequest :: Request -> Aff Response
 handleRequest request = do
-  let
-    currentRoute = route request.pathname
-    puxConfig =
-      { initialState: State.init currentRoute
-      , view: ServerRoot.view
-      , foldp
-      , inputs: []
-      }
-  app <- liftEffect (Pux.start puxConfig)
-  htmlAsString <- liftEffect (renderToStaticMarkup app.markup)
-  let
-    body = stringToUint8Array htmlAsString
-  pure
-    { body: body
-    , headers:
-      [ Tuple "Content-Type" "text/html"
-      ]
-    , status: status200
-    }
+  match <- liftEffect (staticRoute "public" request.pathname)
+  case match of
+    Just { binary, extension, mimeType } -> do
+      pure
+        { body: binary
+        , headers:
+          [ Tuple "Content-Type" mimeType
+          ]
+        , status: status200
+        }
+    Nothing -> do
+      let
+        currentRoute = route request.pathname
+        puxConfig =
+          { initialState: State.init currentRoute
+          , view: ServerRoot.view
+          , foldp
+          , inputs: []
+          }
+      app <- liftEffect (Pux.start puxConfig)
+      htmlAsString <- liftEffect (renderToStaticMarkup app.markup)
+      let
+        body = stringToUint8Array htmlAsString
+      pure
+        { body: body
+        , headers:
+          [ Tuple "Content-Type" "text/html"
+          ]
+        , status: status200
+        }
 
 main :: Effect Unit
 main = do
