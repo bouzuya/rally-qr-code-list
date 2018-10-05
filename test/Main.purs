@@ -12,12 +12,15 @@ import Effect.Class (liftEffect)
 import Effect.Console (log)
 import Effect.Exception (throw)
 import Prelude (Unit, bind, discard, pure, show)
-import Share.QrCode.ErrorCorrectionLevel as ErrorCorrectionLevel
 import Share.QrCode as QrCode
+import Share.QrCode.ErrorCorrectionLevel as ErrorCorrectionLevel
 import Share.Request.Rally as Rally
+import Test.MimeType as MimeType
+import Test.Unit.Main (runTest)
 
 main :: Effect Unit
-main = log "Test"
+main = runTest do
+  MimeType.tests
 
 showQrCodeDataUrl :: String -> Effect Unit
 showQrCodeDataUrl text = launchAff_ do
