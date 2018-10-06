@@ -36,7 +36,9 @@
     "url": "git+https://github.com/bouzuya/rally-qr-code-list.git"
   },
   "scripts": {
-    "build": "psc-package sources | xargs purs compile 'src/**/*.purs' 'test/**/*.purs'",
+    "build": "npm-run-all -s 'build:js' 'build:bundle'",
+    "build:bundle": "webpack --mode production --output dist/script/index.js client.js",
+    "build:js": "psc-package sources | xargs purs compile 'src/**/*.purs' 'test/**/*.purs'",
     "postinstall": "psc-package install",
     "psc-package": "psc-package",
     "purs": "purs",

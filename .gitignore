@@ -1,4 +1,5 @@
 /.env*
 /.psc*
+/dist/
 /node_modules/
 /output/

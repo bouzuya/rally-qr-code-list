@@ -40,7 +40,7 @@ handleListen options =
 
 handleRequest :: Request -> Aff Response
 handleRequest request = do
-  match <- liftEffect (staticRoute "public" request.pathname)
+  match <- liftEffect (staticRoute "dist" request.pathname)
   case match of
     Just { binary, extension, mimeType } -> do
       pure
