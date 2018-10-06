@@ -32,10 +32,10 @@ type State =
 deserialize :: String -> Maybe State
 deserialize s = either (const Nothing) Just (readJSON s)
 
-init :: Route -> State
-init route =
+init :: String -> Route -> State
+init assetsBaseUrl route =
   { config:
-    { assetsBaseUrl: "http://localhost:8081" -- TODO: production
+    { assetsBaseUrl
     }
   , email: ""
   , errorCorrectionLevel: ErrorCorrectionLevel.M

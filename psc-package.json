@@ -8,6 +8,7 @@
     "bouzuya-http-client",
     "bouzuya-http-server",
     "node-fs",
+    "node-process",
     "prelude",
     "psci-support",
     "pux",

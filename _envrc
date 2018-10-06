@@ -1,0 +1,4 @@
+# cp _envrc .envrc
+# cp _env .env
+# vi .env
+dotenv
