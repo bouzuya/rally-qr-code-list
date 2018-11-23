@@ -5,7 +5,7 @@ module Share.State
   , serialize
   ) where
 
-import Data.Either (either)
+import Data.Either (either, hush)
 import Data.Maybe (Maybe(..))
 import Prelude (const)
 import Share.QrCode.ErrorCorrectionLevel (ErrorCorrectionLevel)
@@ -30,7 +30,7 @@ type State =
   }
 
 deserialize :: String -> Maybe State
-deserialize s = either (const Nothing) Just (readJSON s)
+deserialize s = hush (readJSON s)
 
 init :: String -> Route -> State
 init assetsBaseUrl route =

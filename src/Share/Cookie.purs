@@ -4,13 +4,13 @@ module Share.Cookie
   ) where
 
 import Control.Monad.Maybe.Trans (MaybeT(..), lift, runMaybeT)
-import Data.Either (either)
+import Data.Either (hush)
 import Data.JSDate as JSDate
 import Data.Maybe (Maybe(..))
 import Data.Nullable (Nullable, toMaybe)
 import Effect (Effect)
 import Effect.Now (now)
-import Prelude (Unit, bind, const, map, pure, (<))
+import Prelude (Unit, bind, map, pure, (<))
 import Share.Request (Token)
 import Simple.JSON (readJSON, writeJSON)
 
@@ -21,7 +21,7 @@ foreign import saveTokenImpl :: String -> Effect Unit
 loadToken :: Effect (Maybe Token)
 loadToken = runMaybeT do
   rawToken <- MaybeT (map toMaybe loadTokenImpl)
-  token <- MaybeT (pure (either (const Nothing) Just (readJSON rawToken)))
+  token <- MaybeT (pure (hush (readJSON rawToken)))
   instant <- lift (map JSDate.fromInstant now)
   expiredAt <- lift (JSDate.parse token.expiredAt)
   MaybeT (pure (if expiredAt < instant then Nothing else (Just token)))

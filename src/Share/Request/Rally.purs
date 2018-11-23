@@ -16,7 +16,7 @@ module Share.Request.Rally
 
 import Bouzuya.HTTP.Client (body, fetch, headers, method, url)
 import Bouzuya.HTTP.Method as Method
-import Data.Either (either)
+import Data.Either (either, hush)
 import Data.Maybe (Maybe(..), maybe)
 import Data.Nullable (Nullable)
 import Data.Options ((:=))
@@ -160,7 +160,7 @@ createShortenUrlToStampByQrCode stampRallyId spotId qrCodeToken = do
       <> url := (baseUrl <> path <> "?view_type=admin"))
   pure do
     body <- response.body
-    shortenUrl <- either (const Nothing) Just (readJSON body)
+    shortenUrl <- hush (readJSON body)
     pure shortenUrl :: Maybe ShortenUrl
 
 createToken :: { email :: String, password :: String } -> Aff (Maybe Token)
@@ -174,7 +174,7 @@ createToken params = do
       <> url := (baseUrl <> path))
   pure do
     body <- response.body
-    token <- either (const Nothing) Just (readJSON body)
+    token <- hush (readJSON body)
     pure token :: Maybe Token
 
 getSpotDetail :: Token -> Int -> Aff (Maybe SpotDetail)
@@ -187,7 +187,7 @@ getSpotDetail token spotId = do
       <> url := (baseUrl <> path <> "?view_type=admin"))
   pure do
     body <- response.body
-    spotList <- either (const Nothing) Just (readJSON body)
+    spotList <- hush (readJSON body)
     pure spotList :: Maybe SpotDetail
 
 getSpotList :: Token -> String -> Aff (Maybe SpotList)
@@ -216,7 +216,7 @@ getSpotList token stampRallyId = do
           <> url := (baseUrl <> path <> "?per=" <> show per <> "&page=" <> show page <> "&view_type=admin"))
       pure do
         body <- response.body
-        spotList <- either (const Nothing) Just (readJSON body)
+        spotList <- hush (readJSON body)
         pure spotList :: Maybe SpotList
 
 getStampRallyList :: Token -> Aff (Maybe StampRallyList)
@@ -229,5 +229,5 @@ getStampRallyList token = do
       <> url := (baseUrl <> path))
   pure do
     body <- response.body
-    stampRallyList <- either (const Nothing) Just (readJSON body)
+    stampRallyList <- hush (readJSON body)
     pure stampRallyList :: Maybe StampRallyList
