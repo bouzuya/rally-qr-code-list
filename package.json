@@ -23,9 +23,9 @@
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "text-encoding": "^0.6.4",
-    "webpack": "^4.17.1",
-    "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "^3.1.5"
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.0",
+    "webpack-dev-server": "^3.1.14"
   },
   "homepage": "https://github.com/bouzuya/rally-qr-code-list#readme",
   "keywords": [],
